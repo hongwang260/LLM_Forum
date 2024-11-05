@@ -75,10 +75,13 @@ public class LoginPage extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     String storedPassword = dataSnapshot.child("password").getValue(String.class);
-                    Log.d(TAG, "stored password: " + storedPassword);
+                    String email = dataSnapshot.child("email").getValue(String.class);
+
                     if (storedPassword != null && storedPassword.equals(passwordInput)) {
-                        // Password matches, proceed to ProfileActivity
+                        // Password matches, proceed to ProfileActivity and pass the encoded email key
                         Intent intent = new Intent(LoginPage.this, ProfileActivity.class);
+                        intent.putExtra("encodedEmailKey", key);  // Pass the encoded email key
+                        intent.putExtra("email", email);           // Pass the actual email for display
                         startActivity(intent);
                     } else {
                         Toast.makeText(LoginPage.this, "Incorrect password.", Toast.LENGTH_SHORT).show();

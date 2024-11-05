@@ -8,8 +8,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,30 +20,38 @@ public class ProfileActivity extends AppCompatActivity {
     private Button buttonSave;
 
     private DatabaseReference mDatabase;
-    private FirebaseUser currentUser;
+    private String encodedEmailKey;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        editTextUsername = findViewById(R.id.editTextUsername);
         editTextEmail = findViewById(R.id.editTextEmail);
+        editTextUsername = findViewById(R.id.editTextUsername);
         buttonSave = findViewById(R.id.buttonSave);
 
+        // Initialize Firebase Database reference
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (currentUser != null) {
-            loadUserProfile(currentUser.getUid());
+        // Retrieve the encoded email key and email from the intent
+        encodedEmailKey = getIntent().getStringExtra("encodedEmailKey");
+        String email = getIntent().getStringExtra("email");
+
+        if (email != null) {
+            editTextEmail.setText(email);  // Auto-fill email
+        }
+
+        if (encodedEmailKey != null) {
+            loadUserProfile(encodedEmailKey);
         }
 
         buttonSave.setOnClickListener(v -> updateUserProfile());
     }
 
-    private void loadUserProfile(String userId) {
+    private void loadUserProfile(String encodedKey) {
         // Fetch user profile data from Firebase
-        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("users").child(encodedKey).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 UserProfile profile = snapshot.getValue(UserProfile.class);
@@ -65,11 +71,10 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateUserProfile() {
         String username = editTextUsername.getText().toString();
         String email = editTextEmail.getText().toString();
-
-        // Update profile data in Firebase
-        if (currentUser != null) {
+        // Update profile data in Firebase using the encoded email key
+        if (encodedEmailKey != null) {
             UserProfile updatedProfile = new UserProfile(username, email);
-            mDatabase.child("users").child(currentUser.getUid()).setValue(updatedProfile)
+            mDatabase.child("users").child(encodedEmailKey).setValue(updatedProfile)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(ProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
