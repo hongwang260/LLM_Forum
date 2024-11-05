@@ -3,8 +3,6 @@ package com.example.ginshinimpact_project2_cs310;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -21,9 +19,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
 public class LoginPage extends AppCompatActivity {
 
     private EditText editTextEmail;
@@ -38,7 +33,7 @@ public class LoginPage extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Initialize Firebase reference
-        databaseRef = FirebaseDatabase.getInstance().getReference();
+        databaseRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Set up padding for edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -62,15 +57,9 @@ public class LoginPage extends AppCompatActivity {
                 return;
             }
 
-            String lookupKey = isValidEmail(emailOrId) ? customEncodeEmail(emailOrId) : emailOrId;
-            Log.d(TAG, "Encoded key for lookup: " + lookupKey); // Debugging log for encoded key
+            String lookupKey = customEncodeEmail(emailOrId);
             verifyUserCredentials(lookupKey, passwordInput);
         });
-    }
-
-    // Method to check if the input is a valid email
-    private boolean isValidEmail(String email) {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     // Method to URL-encode the email address for Firebase key usage
@@ -78,7 +67,6 @@ public class LoginPage extends AppCompatActivity {
     private String customEncodeEmail(String email) {
         return email.replace("@", "%40").replace(".", "%2E");
     }
-
 
     // Method to verify credentials by looking up in Firebase
     private void verifyUserCredentials(String key, String passwordInput) {
