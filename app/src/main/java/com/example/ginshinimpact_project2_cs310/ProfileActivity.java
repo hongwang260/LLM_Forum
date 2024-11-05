@@ -1,58 +1,82 @@
 package com.example.ginshinimpact_project2_cs310;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private EditText editTextName, editTextEmail, editTextBio;
+    private EditText editTextUsername, editTextEmail;
     private Button buttonSave;
+
+    private DatabaseReference mDatabase;
+    private FirebaseUser currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        editTextName = findViewById(R.id.editTextName);
+        editTextUsername = findViewById(R.id.editTextUsername);
         editTextEmail = findViewById(R.id.editTextEmail);
-        editTextBio = findViewById(R.id.editTextBio);
         buttonSave = findViewById(R.id.buttonSave);
 
-        loadProfile(); // Load existing profile data
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        buttonSave.setOnClickListener(new View.OnClickListener() {
+        if (currentUser != null) {
+            loadUserProfile(currentUser.getUid());
+        }
+
+        buttonSave.setOnClickListener(v -> updateUserProfile());
+    }
+
+    private void loadUserProfile(String userId) {
+        // Fetch user profile data from Firebase
+        mDatabase.child("users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                saveProfile();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                UserProfile profile = snapshot.getValue(UserProfile.class);
+                if (profile != null) {
+                    editTextUsername.setText(profile.username);
+                    editTextEmail.setText(profile.email);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(ProfileActivity.this, "Failed to load profile", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void loadProfile() {
-        SharedPreferences prefs = getSharedPreferences("userProfile", MODE_PRIVATE);
-        editTextName.setText(prefs.getString("name", ""));
-        editTextEmail.setText(prefs.getString("email", ""));
-        editTextBio.setText(prefs.getString("bio", ""));
-    }
-
-    private void saveProfile() {
-        String name = editTextName.getText().toString();
+    private void updateUserProfile() {
+        String username = editTextUsername.getText().toString();
         String email = editTextEmail.getText().toString();
-        String bio = editTextBio.getText().toString();
 
-        SharedPreferences prefs = getSharedPreferences("userProfile", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("name", name);
-        editor.putString("email", email);
-        editor.putString("bio", bio);
-        editor.apply();
-
-        Toast.makeText(this, "Profile saved successfully", Toast.LENGTH_SHORT).show();
+        // Update profile data in Firebase
+        if (currentUser != null) {
+            UserProfile updatedProfile = new UserProfile(username, email);
+            mDatabase.child("users").child(currentUser.getUid()).setValue(updatedProfile)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(ProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(ProfileActivity.this, "Update Failed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }
     }
 }
