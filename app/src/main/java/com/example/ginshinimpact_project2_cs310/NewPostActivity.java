@@ -37,6 +37,9 @@ public class NewPostActivity extends AppCompatActivity {
     }
 
     private void savePost() {
+        //get the current user that is logged in
+        UserProfile userProfile = UserSession.getInstance().getUserProfile();
+
         String title = editTextTitle.getText().toString().trim();
         String llmKind = editTextLLMKind.getText().toString().trim();
         String content = editTextContent.getText().toString().trim();
@@ -52,7 +55,7 @@ public class NewPostActivity extends AppCompatActivity {
         String postId = databasePosts.push().getKey();
 
         // Create a new post object
-        Post post = new Post(postId, title, llmKind, content, authorNotes);
+        Post post = new Post(postId, title, llmKind, content, authorNotes, userProfile.ID);
 
         // Save the post to Firebase
         if (postId != null) {

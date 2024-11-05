@@ -82,14 +82,20 @@ public class SignupPage extends AppCompatActivity {
     private void saveUserToFirebase(String emailOrId, String password) {
         // Encode the email if it's an email to make it Firebase-compatible as a key
         String key = emailOrId.contains("@") ? encodeEmail(emailOrId) : emailOrId;
+        //use a unique id foe each user that exist in the database
+        DatabaseReference newUserRef = databaseRef.push();
+        String uniqueId = newUserRef.getKey();
 
-        // Create a map to store email and password directly
-        Map<String, Object> userMap = new HashMap<>();
-        userMap.put("email", emailOrId);
-        userMap.put("password", password);
+        // Create user profile to pass the stored values into Firebase
+        UserProfile user = new UserProfile();
+        user.email = emailOrId;
+        user.username = "";
+        user.ID = uniqueId;
+        user.setPassword(password);
+        UserSession.getInstance().setUserProfile(user);
 
         // Save to Firebase under the 'users' node
-        databaseRef.child(key).setValue(userMap)
+        databaseRef.child(key).setValue(user)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(SignupPage.this, "Signup successful!", Toast.LENGTH_SHORT).show();
