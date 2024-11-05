@@ -27,6 +27,7 @@
         <activity android:name=".ProfileActivity" />
         <activity android:name=".SignupPage" />
         <activity android:name=".HomePage" />
+        <activity android:name=".PostDetail" />
 
     </application>
 </manifest>

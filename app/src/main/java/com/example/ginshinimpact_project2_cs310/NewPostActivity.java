@@ -37,9 +37,10 @@ public class NewPostActivity extends AppCompatActivity {
     }
 
     private void savePost() {
-        //get the current user that is logged in
+        // Get the current user that is logged in
         UserProfile userProfile = UserSession.getInstance().getUserProfile();
 
+        // Collect input data
         String title = editTextTitle.getText().toString().trim();
         String llmKind = editTextLLMKind.getText().toString().trim();
         String content = editTextContent.getText().toString().trim();
@@ -51,23 +52,39 @@ public class NewPostActivity extends AppCompatActivity {
             return;
         }
 
-        // Generate unique ID for post
+        // Generate unique ID for the post
         String postId = databasePosts.push().getKey();
 
         // Create a new post object
         Post post = new Post(postId, title, llmKind, content, authorNotes, userProfile.ID);
 
-        // Save the post to Firebase
+        // Save the post to both locations in Firebase
         if (postId != null) {
+            // Save to global posts node
             databasePosts.child(postId).setValue(post)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            Toast.makeText(NewPostActivity.this, "Post saved", Toast.LENGTH_SHORT).show();
-                            finish();
+                            // Also save to the user's posts node if the global save is successful
+                            DatabaseReference userPostsRef = FirebaseDatabase.getInstance()
+                                    .getReference("users")
+                                    .child(userProfile.ID)
+                                    .child("posts")
+                                    .child(postId);
+
+                            userPostsRef.setValue(post)
+                                    .addOnCompleteListener(userTask -> {
+                                        if (userTask.isSuccessful()) {
+                                            Toast.makeText(NewPostActivity.this, "Post saved", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                        } else {
+                                            Toast.makeText(NewPostActivity.this, "Failed to save post under user", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         } else {
-                            Toast.makeText(NewPostActivity.this, "Failed to save post", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(NewPostActivity.this, "Failed to save post globally", Toast.LENGTH_SHORT).show();
                         }
                     });
         }
     }
+
 }

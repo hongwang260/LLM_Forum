@@ -2,7 +2,6 @@ package com.example.ginshinimpact_project2_cs310;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -93,7 +92,7 @@ public class LoginPage extends AppCompatActivity {
                         UserSession.getInstance().setUserProfile(userProfile);
 
                         // Password matches, proceed to ProfileActivity and pass the encoded email key
-                        Intent intent = new Intent(LoginPage.this, ProfileActivity.class);
+                        Intent intent = new Intent(LoginPage.this, HomePage.class);
                         intent.putExtra("encodedEmailKey", key);  // Pass the encoded email key
                         intent.putExtra("email", email);           // Pass the actual email for display
                         startActivity(intent);
