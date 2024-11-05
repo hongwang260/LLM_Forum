@@ -11,6 +11,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,20 +29,44 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         linearLayoutPosts = findViewById(R.id.linearLayoutPosts);
-        Button buttonCreatePost = findViewById(R.id.buttonCreatePost);
+//        Button buttonCreatePost = findViewById(R.id.buttonCreatePost);
 
         // Initialize Firebase reference to "posts" node
         databasePosts = FirebaseDatabase.getInstance().getReference("posts");
 
         // Load posts from Firebase
         loadPostsFromFirebase();
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
 
-        // Set OnClickListener to open NewPostActivity
-        buttonCreatePost.setOnClickListener(v -> {
-            Intent intent = new Intent(HomePage.this, NewPostActivity.class);
-            startActivity(intent);
+        // Set listener for navigation item selection
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
+                return true;
+            } else if (id == R.id.nav_my_posts) {
+                startActivity(new Intent(HomePage.this, ProfilePosts.class));
+                return true;
+            } else if (id == R.id.nav_new_post) {
+                startActivity(new Intent(HomePage.this, NewPostActivity.class));
+                return true;
+            } else if (id == R.id.nav_my_comments) {
+                startActivity(new Intent(HomePage.this, ProfileComments.class));
+                return true;
+            } else if (id == R.id.nav_user_profile) {
+                startActivity(new Intent(HomePage.this, ProfileActivity.class));
+                return true;
+            }
+            return false;
         });
     }
+
+
+//    // Set OnClickListener to open NewPostActivity
+//        buttonCreatePost.setOnClickListener(v -> {
+//            Intent intent = new Intent(HomePage.this, NewPostActivity.class);
+//            startActivity(intent);
+//        });
+//    }
 
     private void loadPostsFromFirebase() {
         databasePosts.addValueEventListener(new ValueEventListener() {
