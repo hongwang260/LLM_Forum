@@ -25,6 +25,8 @@
 
         <!-- Profile Activity Declaration -->
         <activity android:name=".ProfileActivity" />
+        <activity android:name=".SignupPage" />
+        <activity android:name=".HomePage" />
 
     </application>
 </manifest>

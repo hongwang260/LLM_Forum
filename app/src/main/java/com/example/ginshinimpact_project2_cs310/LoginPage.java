@@ -46,6 +46,7 @@ public class LoginPage extends AppCompatActivity {
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextPassword = findViewById(R.id.editTextPassword);
         Button buttonLogin = findViewById(R.id.buttonLogin);
+        Button buttonSignup = findViewById(R.id.buttonSignup);
 
         // Set up the click listener for the Login button
         buttonLogin.setOnClickListener(v -> {
@@ -59,6 +60,12 @@ public class LoginPage extends AppCompatActivity {
 
             String lookupKey = customEncodeEmail(emailOrId);
             verifyUserCredentials(lookupKey, passwordInput);
+        });
+
+        // Set up the click listener for the signup button to redirect the user to signup page
+        buttonSignup.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginPage.this, SignupPage.class);
+            startActivity(intent);
         });
     }
 
