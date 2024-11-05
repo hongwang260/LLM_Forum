@@ -81,10 +81,17 @@ public class LoginPage extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    //data that is stored in the database, used to keep track of session
                     String storedPassword = dataSnapshot.child("password").getValue(String.class);
+                    String storedUsername = dataSnapshot.child("username").getValue(String.class);
+                    String storedID = dataSnapshot.child("ID").getValue(String.class);
                     String email = dataSnapshot.child("email").getValue(String.class);
 
                     if (storedPassword != null && storedPassword.equals(passwordInput)) {
+                        UserProfile userProfile = new UserProfile(storedUsername, email, storedID);
+                        userProfile.setPassword(storedPassword);
+                        UserSession.getInstance().setUserProfile(userProfile);
+
                         // Password matches, proceed to ProfileActivity and pass the encoded email key
                         Intent intent = new Intent(LoginPage.this, ProfileActivity.class);
                         intent.putExtra("encodedEmailKey", key);  // Pass the encoded email key

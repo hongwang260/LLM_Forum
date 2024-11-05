@@ -16,15 +16,17 @@ public class UserProfile {
         username = "";
         email = "";
         password = "";
-
+        ID = "";
     }
 
-    public UserProfile(String username, String email) {
+    public UserProfile(String username, String email, String ID) {
         this.username = username;
         this.email = email;
+        this.ID = ID;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
+    public String getPassword() {return this.password;}
 }
