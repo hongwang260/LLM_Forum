@@ -14,6 +14,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private EditText editTextUsername, editTextEmail;
@@ -71,10 +74,15 @@ public class ProfileActivity extends AppCompatActivity {
     private void updateUserProfile() {
         String username = editTextUsername.getText().toString();
         String email = editTextEmail.getText().toString();
-        // Update profile data in Firebase using the encoded email key
+
+        // Only update the username and email fields
         if (encodedEmailKey != null) {
-            UserProfile updatedProfile = new UserProfile(username, email);
-            mDatabase.child("users").child(encodedEmailKey).setValue(updatedProfile)
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("username", username);
+            updates.put("email", email);
+
+            // Use updateChildren to only update specific fields without overwriting others
+            mDatabase.child("users").child(encodedEmailKey).updateChildren(updates)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(ProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
