@@ -1,6 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+        android:id="@+id/editTextTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Title" />
+
+    <EditText
+        android:id="@+id/editTextLLMKind"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="LLM Kind (e.g., GPT-3, GPT-4)" />
+
+    <EditText
+        android:id="@+id/editTextContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Content" />
+
+    <EditText
+        android:id="@+id/editTextAuthorNotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Author Notes" />
+
+    <Button
+        android:id="@+id/buttonSavePost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save Post" />
+
+    <Button
+        android:id="@+id/buttonUpdatePost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Post" />
+
+    <Button
+        android:id="@+id/buttonDeletePost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Post" />
+
+</LinearLayout>
