@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/buttonCreatePost"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -23,5 +23,16 @@
             android:orientation="vertical"
             android:padding="16dp" />
     </ScrollView>
+
+    <!-- Button to create a new post -->
+    <Button
+        android:id="@+id/buttonCreatePost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create New Post"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

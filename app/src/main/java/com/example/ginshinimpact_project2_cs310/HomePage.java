@@ -1,11 +1,13 @@
 package com.example.ginshinimpact_project2_cs310;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,12 +28,19 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         linearLayoutPosts = findViewById(R.id.linearLayoutPosts);
+        Button buttonCreatePost = findViewById(R.id.buttonCreatePost);
 
         // Initialize Firebase reference to "posts" node
         databasePosts = FirebaseDatabase.getInstance().getReference("posts");
 
         // Load posts from Firebase
         loadPostsFromFirebase();
+
+        // Set OnClickListener to open NewPostActivity
+        buttonCreatePost.setOnClickListener(v -> {
+            Intent intent = new Intent(HomePage.this, NewPostActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadPostsFromFirebase() {
@@ -47,9 +56,10 @@ public class HomePage extends AppCompatActivity {
                     String llmKind = postSnapshot.child("llmKind").getValue(String.class);
                     String content = postSnapshot.child("content").getValue(String.class);
                     String authorNotes = postSnapshot.child("authorNotes").getValue(String.class);
+                    String postId = postSnapshot.getKey();
 
                     if (title != null && llmKind != null && content != null && authorNotes != null) {
-                        addPostToLayout(title, llmKind, content, authorNotes);
+                        addPostToLayout(postId, title, llmKind, content, authorNotes);
                     }
                 }
             }
@@ -61,8 +71,7 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
-
-    private void addPostToLayout(String title, String llmKind, String content, String authorNotes) {
+    private void addPostToLayout(String postId, String title, String llmKind, String content, String authorNotes) {
         // Create a LinearLayout for each post
         LinearLayout postLayout = new LinearLayout(this);
         postLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -94,18 +103,18 @@ public class HomePage extends AppCompatActivity {
         postLayout.addView(titleTextView);
         postLayout.addView(llmKindTextView);
 
-        // Set onClickListener to open DetailPage with the full post details
+        // Set onClickListener to open PostDetail with the full post details
         postLayout.setOnClickListener(v -> {
             Intent intent = new Intent(HomePage.this, PostDetail.class);
             intent.putExtra("title", title);
             intent.putExtra("llmKind", llmKind);
             intent.putExtra("content", content);
             intent.putExtra("authorNotes", authorNotes);
+            intent.putExtra("postId", postId);
             startActivity(intent);
         });
 
         // Add the post layout to the main LinearLayout
         linearLayoutPosts.addView(postLayout);
     }
-
 }

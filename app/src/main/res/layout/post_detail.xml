@@ -45,4 +45,28 @@
         android:text="Author Notes"
         android:textSize="16sp"
         android:layout_marginTop="8dp" />
+
+    <!-- Scrollable comments section -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Comments"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:paddingTop="8dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutComments"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp" />
+    </ScrollView>
 </LinearLayout>
