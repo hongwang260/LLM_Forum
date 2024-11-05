@@ -49,7 +49,7 @@ public class ProfileActivity extends AppCompatActivity {
             loadUserProfile(encodedEmailKey);
         }
 
-        buttonSave.setOnClickListener(v -> updateUserProfile());
+        buttonSave.setOnClickListener(v -> checkUsernameExistsAndSave());
     }
 
     private void loadUserProfile(String encodedKey) {
@@ -71,10 +71,32 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUserProfile() {
+    private void checkUsernameExistsAndSave() {
         String username = editTextUsername.getText().toString();
-        String email = editTextEmail.getText().toString();
 
+        // Check if username already exists in the database
+        mDatabase.child("users").orderByChild("username").equalTo(username)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            // Username already exists, show an error message
+                            Toast.makeText(ProfileActivity.this, "Username already exists. Please choose another.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Username is available, proceed to update the profile
+                            updateUserProfile(username);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(ProfileActivity.this, "Error checking username", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void updateUserProfile(String username) {
+        String email = editTextEmail.getText().toString();
         // Only update the username and email fields
         if (encodedEmailKey != null) {
             Map<String, Object> updates = new HashMap<>();
