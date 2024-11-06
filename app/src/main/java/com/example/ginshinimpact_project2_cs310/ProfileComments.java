@@ -1,5 +1,6 @@
 package com.example.ginshinimpact_project2_cs310;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +38,13 @@ public class ProfileComments extends AppCompatActivity {
         loadUserComments();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Reload comments when the activity resumes to reflect any updates
+        loadUserComments();
+    }
+
     private void loadUserComments() {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -57,10 +65,20 @@ public class ProfileComments extends AppCompatActivity {
                         for (DataSnapshot commentSnapshot : commentsSnapshot.getChildren()) {
                             String username = commentSnapshot.child("username").getValue(String.class);
                             String content = commentSnapshot.child("content").getValue(String.class);
-                            String rating = commentSnapshot.child("rating").getValue(String.class);
+                            String postID = commentSnapshot.child("postId").getValue(String.class);
+                            String commentID = commentSnapshot.getKey();
+
+                            Object ratingObj = commentSnapshot.child("rating").getValue();
+                            String rating = null;
+
+                            if (ratingObj instanceof Long) {
+                                rating = String.valueOf(ratingObj); // Convert Long to String
+                            } else if (ratingObj instanceof String) {
+                                rating = (String) ratingObj; // Use String directly
+                            }
 
                             if (username != null && content != null && rating != null) {
-                                addCommentToLayout(username, content, rating);
+                                addCommentToLayout(commentID, username, content, rating, postID);
                             }
                         }
                         break; // Exit loop once the user is found
@@ -79,7 +97,7 @@ public class ProfileComments extends AppCompatActivity {
         });
     }
 
-    private void addCommentToLayout(String username, String content, String rating) {
+    private void addCommentToLayout(String commentId, String username, String content, String rating, String postID) {
         TextView usernameTextView = new TextView(this);
         usernameTextView.setText("Username: " + username);
         usernameTextView.setTextSize(16);
@@ -95,8 +113,27 @@ public class ProfileComments extends AppCompatActivity {
         contentTextView.setTextSize(14);
         contentTextView.setPadding(0, 4, 0, 16);
 
-        linearLayoutUserComments.addView(usernameTextView);
-        linearLayoutUserComments.addView(ratingTextView);
-        linearLayoutUserComments.addView(contentTextView);
+        // Wrap these TextViews in a LinearLayout to make the entire comment clickable
+        LinearLayout commentLayout = new LinearLayout(this);
+        commentLayout.setOrientation(LinearLayout.VERTICAL);
+        commentLayout.setPadding(0, 16, 0, 16);
+        commentLayout.addView(usernameTextView);
+        commentLayout.addView(ratingTextView);
+        commentLayout.addView(contentTextView);
+
+        // Set an OnClickListener to open CommentModifier for editing
+        commentLayout.setOnClickListener(v -> {
+            Intent intent = new Intent(ProfileComments.this, CommentModifier.class);
+            intent.putExtra("commentId", commentId);
+            intent.putExtra("postId", postID);  // Assuming postId is available in your comment structure
+            intent.putExtra("username", username);
+            intent.putExtra("content", content);
+            intent.putExtra("rating", rating);
+            intent.putExtra("isEdit", true);  // Use this flag to indicate editing mode
+            startActivity(intent);
+        });
+
+        // Add the comment layout to the main layout
+        linearLayoutUserComments.addView(commentLayout);
     }
 }

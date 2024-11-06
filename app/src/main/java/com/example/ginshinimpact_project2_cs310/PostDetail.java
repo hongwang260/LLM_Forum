@@ -69,7 +69,6 @@ public class PostDetail extends AppCompatActivity {
                 for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
                     String username = commentSnapshot.child("username").getValue(String.class);
                     String content = commentSnapshot.child("content").getValue(String.class);
-//                    String rating = commentSnapshot.child("rating").getValue(String.class);
 
                     Object ratingObj = commentSnapshot.child("rating").getValue();
                     String rating = null;
