@@ -44,6 +44,17 @@ public class PostDetail extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button modifyPostButton = findViewById(R.id.buttonModifyPost);
+        Button deletePostButton = findViewById(R.id.buttonDeletePost);
+
+        modifyPostButton.setOnClickListener(v -> {
+            Intent intent = new Intent(PostDetail.this, PostModifier.class);
+            intent.putExtra("postId", postId);
+            startActivity(intent);
+        });
+
+        deletePostButton.setOnClickListener(v -> deletePost());
+
         TextView titleTextView = findViewById(R.id.textViewTitle);
         TextView llmKindTextView = findViewById(R.id.textViewLLMKind);
         TextView contentTextView = findViewById(R.id.textViewContent);
@@ -105,5 +116,54 @@ public class PostDetail extends AppCompatActivity {
 
         linearLayoutComments.addView(usernameTextView);
         linearLayoutComments.addView(ratingTextView);
+    }
+
+
+
+    private void deletePost() {
+        // Remove the post from the "posts" root
+        FirebaseDatabase.getInstance().getReference("posts").child(postId).removeValue()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(PostDetail.this, "Post deleted successfully.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    } else {
+                        Toast.makeText(PostDetail.this, "Failed to delete post.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        // Remove associated comments from each user's profile
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    String userKey = userSnapshot.getKey();
+                    DatabaseReference userCommentsRef = usersRef.child(userKey).child("comments");
+
+                    userCommentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot commentSnapshot) {
+                            for (DataSnapshot comment : commentSnapshot.getChildren()) {
+                                String associatedPostId = comment.child("postId").getValue(String.class);
+                                if (postId.equals(associatedPostId)) {
+                                    comment.getRef().removeValue();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Toast.makeText(PostDetail.this, "Failed to remove comments associated with post.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(PostDetail.this, "Failed to fetch user data for comment deletion.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

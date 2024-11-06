@@ -75,4 +75,18 @@
         android:text="Add Comment"
         android:layout_marginTop="16dp" />
 
+    <Button
+        android:id="@+id/buttonModifyPost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Modify Post"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/buttonDeletePost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Post"
+        android:layout_marginTop="8dp" />
+
 </LinearLayout>
