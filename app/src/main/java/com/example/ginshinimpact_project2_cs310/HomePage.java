@@ -28,7 +28,6 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         linearLayoutPosts = findViewById(R.id.linearLayoutPosts);
-//        Button buttonCreatePost = findViewById(R.id.buttonCreatePost);
 
         // Initialize Firebase reference to "posts" node
         databasePosts = FirebaseDatabase.getInstance().getReference("posts");
@@ -58,14 +57,6 @@ public class HomePage extends AppCompatActivity {
             return false;
         });
     }
-
-
-//    // Set OnClickListener to open NewPostActivity
-//        buttonCreatePost.setOnClickListener(v -> {
-//            Intent intent = new Intent(HomePage.this, NewPostActivity.class);
-//            startActivity(intent);
-//        });
-//    }
 
     private void loadPostsFromFirebase() {
         databasePosts.addValueEventListener(new ValueEventListener() {
