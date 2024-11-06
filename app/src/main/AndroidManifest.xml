@@ -33,6 +33,7 @@
         <activity android:name=".ProfilePosts" />
         <activity android:name=".CommentModifier" />
         <activity android:name=".PostModifier" />
+        <activity android:name=".Search" />
 
     </application>
 </manifest>

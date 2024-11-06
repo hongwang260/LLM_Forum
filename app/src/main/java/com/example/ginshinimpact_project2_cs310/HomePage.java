@@ -2,9 +2,13 @@ package com.example.ginshinimpact_project2_cs310;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
@@ -33,6 +37,11 @@ public class HomePage extends AppCompatActivity {
         // Load posts from Firebase
         loadPostsFromFirebase();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
+
+        // Button on click listener
+        EditText text = findViewById(R.id.search_bar);
+        TextView btn = (TextView) findViewById(R.id.button);
+        btn.setOnClickListener(this::onClickSearch);
 
         // Set listener for navigation item selection
         bottomNavigationView.setOnItemSelectedListener(item -> {
@@ -130,5 +139,29 @@ public class HomePage extends AppCompatActivity {
 
         // Add the post layout to the main LinearLayout
         linearLayoutPosts.addView(postLayout);
+    }
+
+    public void onClickSearch(View view){
+        EditText text = findViewById(R.id.search_bar);
+        RadioGroup group = findViewById(R.id.options);
+        String inputText = text.getText().toString();
+        int selectedId = group.getCheckedRadioButtonId();
+
+        if (selectedId != -1) {
+            RadioButton op = findViewById(selectedId);
+            String option = op.getText().toString();
+            Search(inputText, option);
+        }
+        else {
+            Toast.makeText(HomePage.this, "Need to Select a Filter", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    private void Search (String text, String option){
+        Intent intent = new Intent(this, Search.class);
+        intent.putExtra("Content", text);
+        intent.putExtra("Option", option);
+        startActivity(intent);
     }
 }
