@@ -27,30 +27,27 @@ public class CommentModifier extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
 
-        // Initialize views
         editTextContent = findViewById(R.id.editTextContent);
         editTextRating = findViewById(R.id.editTextRating);
         buttonSubmitComment = findViewById(R.id.buttonSubmitComment);
         buttonDeleteComment = findViewById(R.id.buttonDeleteComment);
 
-        // Retrieve postId, postOwnerId, and commentId (if editing an existing comment)
+        // get postId, postOwnerId, and commentId used for existing
         postId = getIntent().getStringExtra("postId");
         postOwnerId = getIntent().getStringExtra("ownerId");
         commentId = getIntent().getStringExtra("commentId");
 
-        // Initialize Firebase reference for comments under the specific post
         commentsRef = FirebaseDatabase.getInstance().getReference("posts").child(postId).child("comments");
 
-        // Retrieve the current user's ID and username from UserSession
+        // Get user ID and username
         findUserDetails();
 
-        // If editing an existing comment, load its data and show the delete button
+        // existing comment -> pre-fill the sections and show delete button
         if (commentId != null) {
             loadExistingCommentData();
-            buttonDeleteComment.setVisibility(View.VISIBLE); // Show delete button for existing comments
+            buttonDeleteComment.setVisibility(View.VISIBLE);
         }
 
-        // Set button click listeners
         buttonSubmitComment.setOnClickListener(v -> submitOrUpdateComment());
         buttonDeleteComment.setOnClickListener(v -> deleteComment());
     }
@@ -60,6 +57,7 @@ public class CommentModifier extends AppCompatActivity {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                // loop to find the corresponding user's info in the database
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     UserProfile user = userSnapshot.getValue(UserProfile.class);
                     if (user != null && user.ID.equals(UserSession.getInstance().getUserProfile().ID)) {
@@ -100,11 +98,13 @@ public class CommentModifier extends AppCompatActivity {
         String content = editTextContent.getText().toString().trim();
         String ratingText = editTextRating.getText().toString().trim();
 
+        // check for the REQUIRED field - rating
         if (ratingText.isEmpty()) {
             Toast.makeText(this, "Please provide a rating.", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        //pre fill the content with a default message if user decides not to provide one
         if (content.isEmpty()) {
             content = "User did not leave content for this comment.";
         }
@@ -120,13 +120,13 @@ public class CommentModifier extends AppCompatActivity {
         // Use existing commentId if updating, otherwise create a new one
         if (commentId == null) {
             commentId = commentsRef.push().getKey();
+            // error handling
             if (commentId == null) {
                 Toast.makeText(this, "Failed to generate comment ID.", Toast.LENGTH_SHORT).show();
                 return;
             }
         }
 
-        // Create or update the Comment object
         Comment comment = new Comment(commentId, userId, content, rating, username, postId);
 
         // Save or update the comment under the post in Firebase
@@ -135,7 +135,7 @@ public class CommentModifier extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         Toast.makeText(CommentModifier.this, "Comment saved.", Toast.LENGTH_SHORT).show();
                         saveOrUpdateCommentInUserProfile(comment);
-                        finish(); // Navigate back to PostDetail activity
+                        finish();
                     } else {
                         Toast.makeText(CommentModifier.this, "Failed to save comment.", Toast.LENGTH_SHORT).show();
                     }

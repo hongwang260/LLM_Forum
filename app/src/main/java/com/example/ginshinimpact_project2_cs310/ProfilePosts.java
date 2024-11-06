@@ -26,54 +26,41 @@ public class ProfilePosts extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_posts);
 
-        // Initialize layout where posts will be added
         linearLayoutUserPosts = findViewById(R.id.linearLayoutUserPosts);
-
-        // Retrieve user ID from UserSession
         currentUserID = UserSession.getInstance().getUserProfile().ID;
-
-        // Reference to the "users" node in Firebase
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Load the current user's posts
         loadUserPosts();
     }
 
+    // used to load the posts for this user
     private void loadUserPosts() {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                linearLayoutUserPosts.removeAllViews(); // Clear existing views
-
-                boolean userFound = false;
+                linearLayoutUserPosts.removeAllViews();
 
                 // Loop through all users to find the one with the matching ID
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     String userID = userSnapshot.child("ID").getValue(String.class);
 
                     if (userID != null && userID.equals(currentUserID)) {
-                        userFound = true;
                         DataSnapshot postsSnapshot = userSnapshot.child("posts");
 
                         // Iterate over all posts for the matched user
                         for (DataSnapshot postSnapshot : postsSnapshot.getChildren()) {
                             String title = postSnapshot.child("title").getValue(String.class);
                             String llmKind = postSnapshot.child("llmKind").getValue(String.class);
-                            String postId = postSnapshot.getKey();  // This is the post ID
+                            String postId = postSnapshot.getKey();
                             String content = postSnapshot.child("content").getValue(String.class);  // Content of the post
                             String authorNotes = postSnapshot.child("authorNotes").getValue(String.class);  // Author notes
-
 
                             if (title != null && llmKind != null) {
                                 addPostToLayout(postId, title, llmKind, content, authorNotes);
                             }
                         }
-                        break; // Exit loop once the user is found
                     }
-                }
-
-                if (!userFound) {
-                    Toast.makeText(ProfilePosts.this, "User not found.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -84,6 +71,7 @@ public class ProfilePosts extends AppCompatActivity {
         });
     }
 
+    // add each post to the page for display
     private void addPostToLayout(String postId, String title, String llmKind, String content, String authorNotes) {
         // Create a LinearLayout for each post
         LinearLayout postLayout = new LinearLayout(this);
@@ -94,7 +82,6 @@ public class ProfilePosts extends AppCompatActivity {
         postLayout.setPadding(0, 16, 0, 16);
         postLayout.setClickable(true);  // Make it clickable
 
-        // Create a TextView for the post title
         TextView titleTextView = new TextView(this);
         titleTextView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -103,7 +90,6 @@ public class ProfilePosts extends AppCompatActivity {
         titleTextView.setTextSize(18);
         titleTextView.setPadding(0, 0, 0, 4);
 
-        // Create a TextView for the LLM model kind
         TextView llmKindTextView = new TextView(this);
         llmKindTextView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -112,11 +98,10 @@ public class ProfilePosts extends AppCompatActivity {
         llmKindTextView.setTextSize(16);
         llmKindTextView.setPadding(0, 4, 0, 16);
 
-        // Add TextViews to the post layout
         postLayout.addView(titleTextView);
         postLayout.addView(llmKindTextView);
 
-        // Set onClickListener to open PostDetail with the full post details
+        // used to show the detail page of the post
         postLayout.setOnClickListener(v -> {
             Intent intent = new Intent(ProfilePosts.this, PostDetail.class);
             intent.putExtra("title", title);
@@ -127,7 +112,6 @@ public class ProfilePosts extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Add the post layout to the main LinearLayout
         linearLayoutUserPosts.addView(postLayout);
     }
 }

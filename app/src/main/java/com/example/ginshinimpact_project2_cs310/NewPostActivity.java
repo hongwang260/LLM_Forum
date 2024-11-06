@@ -23,17 +23,14 @@ public class NewPostActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_post);
 
-        // Initialize Firebase reference
         databasePosts = FirebaseDatabase.getInstance().getReference("posts");
 
-        // Initialize fields
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextLLMKind = findViewById(R.id.editTextLLMKind);
         editTextContent = findViewById(R.id.editTextContent);
         editTextAuthorNotes = findViewById(R.id.editTextAuthorNotes);
         buttonSavePost = findViewById(R.id.buttonSavePost);
 
-        // Set click listener for save button
         buttonSavePost.setOnClickListener(v -> savePost());
     }
 
@@ -41,13 +38,13 @@ public class NewPostActivity extends AppCompatActivity {
         // Get the current user that is logged in
         UserProfile userProfile = UserSession.getInstance().getUserProfile();
 
-        // Collect input data
+        // input data
         String title = editTextTitle.getText().toString().trim();
         String llmKind = editTextLLMKind.getText().toString().trim();
         String content = editTextContent.getText().toString().trim();
         String authorNotes = editTextAuthorNotes.getText().toString().trim();
 
-        // Validate required fields
+        // check required fields
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(llmKind) || TextUtils.isEmpty(content)) {
             Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
             return;
@@ -56,11 +53,9 @@ public class NewPostActivity extends AppCompatActivity {
         // Generate unique ID for the post
         String postId = databasePosts.push().getKey();
 
-        // Create a new post object
-        Log.d("user ID", "user Id is : " + userProfile.ID);
         Post post = new Post(postId, title, llmKind, content, authorNotes, userProfile.ID);
 
-        // Save the post to both locations in Firebase
+        // Save the post to database
         if (postId != null) {
             // Save to global posts node
             databasePosts.child(postId).setValue(post)

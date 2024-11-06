@@ -25,43 +25,29 @@ public class ProfileComments extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_comments);
 
-        // Initialize layout where comments will be added
         linearLayoutUserComments = findViewById(R.id.linearLayoutUserComments);
-
-        // Retrieve user ID from UserSession
         currentUserID = UserSession.getInstance().getUserProfile().ID;
-
-        // Reference to the "users" node in Firebase
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Load the current user's comments
         loadUserComments();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // Reload comments when the activity resumes to reflect any updates
-        loadUserComments();
-    }
-
+    // use to load all the comments for the logged in user
     private void loadUserComments() {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 linearLayoutUserComments.removeAllViews(); // Clear existing views
 
-                boolean userFound = false;
-
                 // Loop through all users to find the one with the matching ID
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     String userID = userSnapshot.child("ID").getValue(String.class);
 
                     if (userID != null && userID.equals(currentUserID)) {
-                        userFound = true;
                         DataSnapshot commentsSnapshot = userSnapshot.child("comments");
 
-                        // Iterate over all comments for the matched user
+                        // Iterate over all comments for the matched user to display
                         for (DataSnapshot commentSnapshot : commentsSnapshot.getChildren()) {
                             String username = commentSnapshot.child("username").getValue(String.class);
                             String content = commentSnapshot.child("content").getValue(String.class);
@@ -72,21 +58,17 @@ public class ProfileComments extends AppCompatActivity {
                             String rating = null;
 
                             if (ratingObj instanceof Long) {
-                                rating = String.valueOf(ratingObj); // Convert Long to String
+                                rating = String.valueOf(ratingObj);
                             } else if (ratingObj instanceof String) {
-                                rating = (String) ratingObj; // Use String directly
+                                rating = (String) ratingObj;
                             }
 
+                            // display the comment if all fields are valid
                             if (username != null && content != null && rating != null) {
                                 addCommentToLayout(commentID, username, content, rating, postID);
                             }
                         }
-                        break; // Exit loop once the user is found
                     }
-                }
-
-                if (!userFound) {
-                    Toast.makeText(ProfileComments.this, "User not found.", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -97,7 +79,9 @@ public class ProfileComments extends AppCompatActivity {
         });
     }
 
+    // add each comment to the page for display
     private void addCommentToLayout(String commentId, String username, String content, String rating, String postID) {
+        // code to add the comments to the page dynamically
         TextView usernameTextView = new TextView(this);
         usernameTextView.setText("Username: " + username);
         usernameTextView.setTextSize(16);
@@ -113,7 +97,6 @@ public class ProfileComments extends AppCompatActivity {
         contentTextView.setTextSize(14);
         contentTextView.setPadding(0, 4, 0, 16);
 
-        // Wrap these TextViews in a LinearLayout to make the entire comment clickable
         LinearLayout commentLayout = new LinearLayout(this);
         commentLayout.setOrientation(LinearLayout.VERTICAL);
         commentLayout.setPadding(0, 16, 0, 16);
@@ -121,19 +104,18 @@ public class ProfileComments extends AppCompatActivity {
         commentLayout.addView(ratingTextView);
         commentLayout.addView(contentTextView);
 
-        // Set an OnClickListener to open CommentModifier for editing
+        // Calls modifier to delete/update comment
         commentLayout.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileComments.this, CommentModifier.class);
             intent.putExtra("commentId", commentId);
-            intent.putExtra("postId", postID);  // Assuming postId is available in your comment structure
+            intent.putExtra("postId", postID);
             intent.putExtra("username", username);
             intent.putExtra("content", content);
             intent.putExtra("rating", rating);
-            intent.putExtra("isEdit", true);  // Use this flag to indicate editing mode
+            intent.putExtra("isEdit", true);
             startActivity(intent);
         });
 
-        // Add the comment layout to the main layout
         linearLayoutUserComments.addView(commentLayout);
     }
 }

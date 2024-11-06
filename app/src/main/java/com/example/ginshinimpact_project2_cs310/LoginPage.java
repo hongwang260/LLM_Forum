@@ -32,10 +32,8 @@ public class LoginPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_login);
 
-        // Initialize Firebase reference
         databaseRef = FirebaseDatabase.getInstance().getReference("users");
 
-        // Set up padding for edge-to-edge display
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -48,7 +46,7 @@ public class LoginPage extends AppCompatActivity {
         Button buttonLogin = findViewById(R.id.buttonLogin);
         Button buttonSignup = findViewById(R.id.buttonSignup);
 
-        // Set up the click listener for the Login button
+        // perform login and checks for required fields
         buttonLogin.setOnClickListener(v -> {
             String emailOrId = editTextEmail.getText().toString().trim();
             String passwordInput = editTextPassword.getText().toString().trim();
@@ -62,20 +60,19 @@ public class LoginPage extends AppCompatActivity {
             verifyUserCredentials(lookupKey, passwordInput);
         });
 
-        // Set up the click listener for the signup button to redirect the user to signup page
+        // redirect to signup page
         buttonSignup.setOnClickListener(v -> {
             Intent intent = new Intent(LoginPage.this, SignupPage.class);
             startActivity(intent);
         });
     }
 
-    // Method to URL-encode the email address for Firebase key usage
-    // Custom method to encode email to a Firebase-compatible key
+    // replace unusable character in Firebase to URL encoding
     private String customEncodeEmail(String email) {
         return email.replace("@", "%40").replace(".", "%2E");
     }
 
-    // Method to verify credentials by looking up in Firebase
+    // Verify login
     private void verifyUserCredentials(String key, String passwordInput) {
         databaseRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -95,8 +92,8 @@ public class LoginPage extends AppCompatActivity {
 
                         // Password matches, proceed to ProfileActivity and pass the encoded email key
                         Intent intent = new Intent(LoginPage.this, HomePage.class);
-                        intent.putExtra("encodedEmailKey", key);  // Pass the encoded email key
-                        intent.putExtra("email", email);           // Pass the actual email for display
+                        intent.putExtra("encodedEmailKey", key);
+                        intent.putExtra("email", email);
                         startActivity(intent);
                     } else {
                         Toast.makeText(LoginPage.this, "Incorrect password.", Toast.LENGTH_SHORT).show();

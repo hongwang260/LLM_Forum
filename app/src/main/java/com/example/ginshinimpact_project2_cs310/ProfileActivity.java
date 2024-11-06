@@ -33,27 +33,25 @@ public class ProfileActivity extends AppCompatActivity {
         buttonSave = findViewById(R.id.buttonSave);
         buttonLogout = findViewById(R.id.buttonLogout);
 
-        // Initialize Firebase Database reference
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
-        // Retrieve UserProfile from UserSession
         userProfile = UserSession.getInstance().getUserProfile();
 
-        // Check if UserProfile exists in session (i.e., user is logged in)
+        // check for logged in user
         if (userProfile != null && userProfile.email != null) {
             // Load user data into the EditText fields
             loadUserProfile();
         } else {
             Toast.makeText(this, "User session expired. Please log in again.", Toast.LENGTH_SHORT).show();
-            finish(); // End this activity if UserProfile is null or email is missing
+            finish();
         }
 
         buttonSave.setOnClickListener(v -> updateUserProfile());
         buttonLogout.setOnClickListener(v -> logoutUser());
     }
 
+    // Display user profile data in EditText fields
     private void loadUserProfile() {
-        // Display user profile data in EditText fields
         editTextUsername.setText(userProfile.username);
         editTextEmail.setText(userProfile.email);
     }
@@ -74,6 +72,9 @@ public class ProfileActivity extends AppCompatActivity {
                             Toast.makeText(ProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
                             userProfile.username = updatedUsername;
                             UserSession.getInstance().setUserProfile(userProfile);
+                            Intent intent = new Intent(ProfileActivity.this, HomePage.class);
+                            startActivity(intent);
+                            finish();
                         } else {
                             Toast.makeText(ProfileActivity.this, "Failed to update profile", Toast.LENGTH_SHORT).show();
                         }
@@ -87,19 +88,12 @@ public class ProfileActivity extends AppCompatActivity {
         // Clear the user session
         UserSession.getInstance().clearSession();
 
-        // Verify that session data is cleared with Log.d statements
-        if (UserSession.getInstance().getUserProfile() == null) {
-            Log.d("ProfileActivity", "User session cleared successfully.");
-        } else {
-            Log.d("ProfileActivity", "User session not cleared properly.");
-        }
-
         // Inform the user and redirect to login screen
         Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
 
-        // Redirect to LoginActivity or MainActivity
-        Intent intent = new Intent(ProfileActivity.this, LoginPage.class); // Replace with your login activity
+        // Redirect to Login page
+        Intent intent = new Intent(ProfileActivity.this, LoginPage.class);
         startActivity(intent);
-        finish(); // Close the profile activity
+        finish();
     }
 }

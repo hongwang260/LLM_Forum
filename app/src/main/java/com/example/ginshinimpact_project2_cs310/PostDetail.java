@@ -61,10 +61,10 @@ public class PostDetail extends AppCompatActivity {
     }
 
     private void loadComments() {
-        postRef.addValueEventListener(new ValueEventListener() {  // Use ValueEventListener for real-time updates
+        postRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                linearLayoutComments.removeAllViews();  // Clear previous views
+                linearLayoutComments.removeAllViews();
 
                 for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
                     String username = commentSnapshot.child("username").getValue(String.class);

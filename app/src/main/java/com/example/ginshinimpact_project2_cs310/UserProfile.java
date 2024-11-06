@@ -7,10 +7,6 @@ public class UserProfile {
     public String email;
     public String ID;
     private String password;
-    //map that stores PostId to post object type
-    public Map<String, Post> comments;
-
-    //ALL Comments made, along with Post ID to clear. NO repetitive ID
 
     public UserProfile() {
         username = "";

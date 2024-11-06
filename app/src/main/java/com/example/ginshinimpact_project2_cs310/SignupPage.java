@@ -27,7 +27,6 @@ public class SignupPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        // Initialize Firebase Database reference
         databaseRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Initialize the EditText and Button
@@ -47,25 +46,22 @@ public class SignupPage extends AppCompatActivity {
                 Toast.makeText(SignupPage.this, "Please fill in all fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             // Validate email or ID
             if (!isValidEmailOrId(emailOrId)) {
                 Toast.makeText(SignupPage.this, "Invalid Email or ID. Please use an '@usc.edu' email or a 10-digit ID.", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             // Check if passwords match
             if (!password.equals(confirmPassword)) {
                 Toast.makeText(SignupPage.this, "Passwords do not match.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Save the user to Firebase and proceed to ProfileActivity
             saveUserToFirebase(emailOrId, password);
         });
     }
 
-    // Method to validate if the input is a valid USC email or a 10-digit ID
+    // Method to validate if the input is a valid USC email or a 10-digit USCID
     private boolean isValidEmailOrId(String input) {
         // Pattern for a 10-digit ID
         Pattern idPattern = Pattern.compile("^\\d{10}$");
@@ -79,11 +75,10 @@ public class SignupPage extends AppCompatActivity {
         }
     }
 
-    // Method to save the user data to Firebase
+    // save successful signed up user to the database
     private void saveUserToFirebase(String emailOrId, String password) {
-        // Encode the email if it's an email to make it Firebase-compatible as a key
         String key = emailOrId.contains("@") ? encodeEmail(emailOrId) : emailOrId;
-        //use a unique id foe each user that exist in the database
+        //use a unique id for each user that exist in the database
         DatabaseReference newUserRef = databaseRef.push();
         String uniqueId = newUserRef.getKey();
 
@@ -100,7 +95,6 @@ public class SignupPage extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(SignupPage.this, "Signup successful!", Toast.LENGTH_SHORT).show();
-                        // Navigate to ProfileActivity
                         Intent intent = new Intent(SignupPage.this, ProfileActivity.class);
                         startActivity(intent);
                     } else {
@@ -109,7 +103,7 @@ public class SignupPage extends AppCompatActivity {
                 });
     }
 
-    // Method to encode email to a Firebase-compatible key
+    // encode email to URL encoding
     private String encodeEmail(String email) {
         return email.replace("@", "%40").replace(".", "%2E");
     }

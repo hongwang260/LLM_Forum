@@ -28,8 +28,6 @@ public class HomePage extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         linearLayoutPosts = findViewById(R.id.linearLayoutPosts);
-
-        // Initialize Firebase reference to "posts" node
         databasePosts = FirebaseDatabase.getInstance().getReference("posts");
 
         // Load posts from Firebase
@@ -62,7 +60,6 @@ public class HomePage extends AppCompatActivity {
         databasePosts.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // Clear any existing views in the LinearLayout
                 linearLayoutPosts.removeAllViews();
 
                 // Iterate over all posts and add them to the LinearLayout
@@ -74,7 +71,7 @@ public class HomePage extends AppCompatActivity {
                     String ownerId = postSnapshot.child("ownerId").getValue(String.class);
                     String postId = postSnapshot.getKey();
 
-                    if (title != null && llmKind != null && content != null && authorNotes != null && ownerId != null) {
+                    if (title != null && llmKind != null && content != null && ownerId != null) {
                         addPostToLayout(postId, title, llmKind, content, authorNotes, ownerId);
                     }
                 }
