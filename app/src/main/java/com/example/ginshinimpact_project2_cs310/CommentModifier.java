@@ -73,9 +73,13 @@ public class CommentModifier extends AppCompatActivity {
         String content = editTextContent.getText().toString().trim();
         String ratingText = editTextRating.getText().toString().trim();
 
-        if (content.isEmpty() || ratingText.isEmpty()) {
+        if (ratingText.isEmpty()) {
             Toast.makeText(this, "Please provide content and rating.", Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        if (content.isEmpty()) {
+            content = "user did not leave a content for this comment";
         }
 
         int rating;
