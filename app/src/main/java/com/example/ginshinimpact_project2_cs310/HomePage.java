@@ -19,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class HomePage extends AppCompatActivity {
-
     private LinearLayout linearLayoutPosts;
     private DatabaseReference databasePosts;
 
