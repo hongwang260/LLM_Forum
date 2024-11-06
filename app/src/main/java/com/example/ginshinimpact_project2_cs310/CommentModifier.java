@@ -145,7 +145,7 @@ public class CommentModifier extends AppCompatActivity {
     private void saveOrUpdateCommentInUserProfile(Comment comment) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        // Loop through each user to find both the current user and the post owner
+        // loop to find the user that is logged in
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -155,7 +155,6 @@ public class CommentModifier extends AppCompatActivity {
 
                     if (user != null) {
                         String userKey = userSnapshot.getKey();
-
                         // Update or save comment in the current user's comments section
                         if (user.ID.equals(loggedInUser.ID)) {
                             DatabaseReference userCommentsRef = usersRef.child(userKey).child("comments").child(comment.commentId);
@@ -168,30 +167,42 @@ public class CommentModifier extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(CommentModifier.this, "Failed to find user for comment.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CommentModifier.this, "Failed to find user for comment to save.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void deleteComment() {
-        if (commentId == null) {
-            Toast.makeText(this, "No comment to delete.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-        // Delete the comment from all locations
-        commentsRef.child(commentId).removeValue(); // Delete from post comments
-        usersRef.child(userId).child("comments").child(commentId).removeValue(); // Delete from user's comments
+        // loop to find the user that is logged in
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    UserProfile user = userSnapshot.getValue(UserProfile.class);
+                    UserProfile loggedInUser = UserSession.getInstance().getUserProfile();
 
-        if (userId.equals(postOwnerId)) {
-            usersRef.child(userId).child("posts").child(postId).child("comments").child(commentId).removeValue(); // If owner, delete from their post
-        } else {
-            usersRef.child(postOwnerId).child("posts").child(postId).child("comments").child(commentId).removeValue(); // Otherwise delete from post owner's post
-        }
+                    if (user != null) {
+                        String userKey = userSnapshot.getKey();
+                        // remove the comment from the user comments section
+                        if (user.ID.equals(loggedInUser.ID)) {
+                            usersRef.child(userKey).child("comments").child(commentId).removeValue();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(CommentModifier.this, "Failed to find user for comment to remove.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // remove the comment in the posts root
+        commentsRef.child(commentId).removeValue();
 
         Toast.makeText(CommentModifier.this, "Comment deleted.", Toast.LENGTH_SHORT).show();
-        finish(); // Close activity after deletion
+        finish();
     }
 }
