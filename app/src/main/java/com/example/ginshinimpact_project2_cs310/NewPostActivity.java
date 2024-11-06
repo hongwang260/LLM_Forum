@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -56,6 +57,7 @@ public class NewPostActivity extends AppCompatActivity {
         String postId = databasePosts.push().getKey();
 
         // Create a new post object
+        Log.d("user ID", "user Id is : " + userProfile.ID);
         Post post = new Post(postId, title, llmKind, content, authorNotes, userProfile.ID);
 
         // Save the post to both locations in Firebase

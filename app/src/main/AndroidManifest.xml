@@ -29,6 +29,8 @@
         <activity android:name=".HomePage" />
         <activity android:name=".PostDetail" />
         <activity android:name=".NewPostActivity" />
+        <activity android:name=".ProfileComments" />
+        <activity android:name=".ProfilePosts" />
 
     </application>
 </manifest>

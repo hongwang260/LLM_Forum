@@ -2,6 +2,7 @@ package com.example.ginshinimpact_project2_cs310;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -89,6 +90,7 @@ public class LoginPage extends AppCompatActivity {
                     if (storedPassword != null && storedPassword.equals(passwordInput)) {
                         UserProfile userProfile = new UserProfile(storedUsername, email, storedID);
                         userProfile.setPassword(storedPassword);
+                        Log.d("user ID in login", "user Id is : " + userProfile.ID);
                         UserSession.getInstance().setUserProfile(userProfile);
 
                         // Password matches, proceed to ProfileActivity and pass the encoded email key

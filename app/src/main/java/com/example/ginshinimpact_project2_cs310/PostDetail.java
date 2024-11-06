@@ -59,7 +59,7 @@ public class PostDetail extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 linearLayoutComments.removeAllViews();  // Clear previous views
                 for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
-                    String username = commentSnapshot.child("userId").getValue(String.class);
+                    String username = commentSnapshot.child("username").getValue(String.class);
                     String content = commentSnapshot.child("content").getValue(String.class);
                     //if the user did not provide a content for the comment
                     if (content == null) {
