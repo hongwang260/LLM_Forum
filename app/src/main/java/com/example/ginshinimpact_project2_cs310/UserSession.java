@@ -21,5 +21,9 @@ public class UserSession {
     public void setUserProfile(UserProfile userProfile) {
         this.userProfile = userProfile;
     }
+
+    public void clearSession() {
+        this.userProfile = null;
+    }
 }
 
