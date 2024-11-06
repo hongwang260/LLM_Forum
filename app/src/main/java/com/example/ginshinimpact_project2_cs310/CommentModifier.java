@@ -2,6 +2,7 @@ package com.example.ginshinimpact_project2_cs310;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -118,21 +119,32 @@ public class CommentModifier extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     UserProfile user = userSnapshot.getValue(UserProfile.class);
-                    if (user != null && user.ID.equals(postOwnerId)) {
-                        String userKey = userSnapshot.getKey(); // Get the Firebase key for this user
+                    UserProfile loggedInUser = UserSession.getInstance().getUserProfile();
+                    Log.d("save", "post owner id " + postOwnerId);
+                    if (user != null && user.ID.equals(loggedInUser.ID)) {
+                        String userKey = userSnapshot.getKey();
 
-                        // Save the comment under the user's comments section
                         DatabaseReference userCommentsRef = usersRef.child(userKey).child("comments").child(comment.commentId);
 
                         // Only save required fields in the user's comments section
-                        Comment userComment = new Comment(comment.commentId, "", comment.content, comment.rating, comment.username, comment.postId);
+                        Comment userComment = new Comment(comment.commentId, loggedInUser.ID, comment.content, comment.rating, comment.username, comment.postId);
                         userCommentsRef.setValue(userComment);
 
-                        // Save the comment under the post's owner's comments section for this post
-                        DatabaseReference postOwnerCommentsRef = usersRef.child(postOwnerId).child("posts").child(postId).child("comments").child(comment.commentId);
+                        // if the person who made the post and the post owner is the same
+                        // also need to store the comment to the current person's post comment section
+                        if (user.ID.equals(postOwnerId)) {
+                            DatabaseReference userPostRef = usersRef.child(userKey).child("posts").child(comment.postId).child("comments").child(comment.commentId);
+                            userPostRef.setValue(userComment);
+                        }
+                    } else if (user != null && user.ID.equals(postOwnerId)) {
+                        Log.d("save", "Entered save comment");
+                        String userKey = userSnapshot.getKey();
 
-                        postOwnerCommentsRef.setValue(userComment);
-                        break;
+                        DatabaseReference userCommentsRef = usersRef.child(userKey).child("posts").child(comment.postId).child("comments").child(comment.commentId);
+
+                        // Only save required fields in the post owner's post comments section
+                        Comment userComment = new Comment(comment.commentId, loggedInUser.ID, comment.content, comment.rating, comment.username, comment.postId);
+                        userCommentsRef.setValue(userComment);
                     }
                 }
             }

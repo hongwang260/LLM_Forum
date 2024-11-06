@@ -1,6 +1,7 @@
 package com.example.ginshinimpact_project2_cs310;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,6 +25,14 @@ public class PostDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detail);
 
+        // Retrieve post details passed from the HomePage activity
+        postId = getIntent().getStringExtra("postId");
+        postOwnerId = getIntent().getStringExtra("ownerId");
+        String title = getIntent().getStringExtra("title");
+        String llmKind = "Model: " + getIntent().getStringExtra("llmKind");
+        String content = "Content: " + getIntent().getStringExtra("content");
+        String authorNotes = "Author Notes: " + getIntent().getStringExtra("authorNotes");
+
         Button backButton = findViewById(R.id.buttonBack);
         backButton.setOnClickListener(v -> finish());
 
@@ -31,17 +40,9 @@ public class PostDetail extends AppCompatActivity {
         addCommentButton.setOnClickListener(v -> {
             Intent intent = new Intent(PostDetail.this, CommentModifier.class);
             intent.putExtra("postId", postId);
-            intent.putExtra("postOwnerId", postOwnerId);
+            intent.putExtra("ownerId", postOwnerId);
             startActivity(intent);
         });
-
-        // Retrieve post details passed from the HomePage activity
-        postId = getIntent().getStringExtra("postId");
-        postOwnerId = getIntent().getStringExtra("postOwnerId");
-        String title = getIntent().getStringExtra("title");
-        String llmKind = "Model: " + getIntent().getStringExtra("llmKind");
-        String content = "Content: " + getIntent().getStringExtra("content");
-        String authorNotes = "Author Notes: " + getIntent().getStringExtra("authorNotes");
 
         TextView titleTextView = findViewById(R.id.textViewTitle);
         TextView llmKindTextView = findViewById(R.id.textViewLLMKind);
@@ -68,7 +69,16 @@ public class PostDetail extends AppCompatActivity {
                 for (DataSnapshot commentSnapshot : dataSnapshot.getChildren()) {
                     String username = commentSnapshot.child("username").getValue(String.class);
                     String content = commentSnapshot.child("content").getValue(String.class);
-                    String rating = commentSnapshot.child("rating").getValue(String.class);
+//                    String rating = commentSnapshot.child("rating").getValue(String.class);
+
+                    Object ratingObj = commentSnapshot.child("rating").getValue();
+                    String rating = null;
+
+                    if (ratingObj instanceof Long) {
+                        rating = String.valueOf(ratingObj); // Convert Long to String
+                    } else if (ratingObj instanceof String) {
+                        rating = (String) ratingObj; // Use String directly
+                    }
 
                     if (username != null && content != null && rating != null) {
                         addCommentToLayout(username, content, rating);

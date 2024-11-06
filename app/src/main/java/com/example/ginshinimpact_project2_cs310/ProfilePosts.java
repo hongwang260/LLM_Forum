@@ -1,6 +1,8 @@
 package com.example.ginshinimpact_project2_cs310;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,9 +59,13 @@ public class ProfilePosts extends AppCompatActivity {
                         for (DataSnapshot postSnapshot : postsSnapshot.getChildren()) {
                             String title = postSnapshot.child("title").getValue(String.class);
                             String llmKind = postSnapshot.child("llmKind").getValue(String.class);
+                            String postId = postSnapshot.getKey();  // This is the post ID
+                            String content = postSnapshot.child("content").getValue(String.class);  // Content of the post
+                            String authorNotes = postSnapshot.child("authorNotes").getValue(String.class);  // Author notes
+
 
                             if (title != null && llmKind != null) {
-                                addPostToLayout(title, llmKind);
+                                addPostToLayout(postId, title, llmKind, content, authorNotes);
                             }
                         }
                         break; // Exit loop once the user is found
@@ -78,18 +84,64 @@ public class ProfilePosts extends AppCompatActivity {
         });
     }
 
-    private void addPostToLayout(String title, String llmKind) {
-        TextView titleTextView = new TextView(this);
-        titleTextView.setText("Title: " + title);
-        titleTextView.setTextSize(18);
-        titleTextView.setPadding(0, 16, 0, 4);
+//    private void addPostToLayout(String title, String llmKind) {
+//        TextView titleTextView = new TextView(this);
+//        titleTextView.setText("Title: " + title);
+//        titleTextView.setTextSize(18);
+//        titleTextView.setPadding(0, 16, 0, 4);
+//
+//        TextView modelTextView = new TextView(this);
+//        modelTextView.setText("Model: " + llmKind);
+//        modelTextView.setTextSize(16);
+//        modelTextView.setPadding(0, 4, 0, 16);
+//
+//        linearLayoutUserPosts.addView(titleTextView);
+//        linearLayoutUserPosts.addView(modelTextView);
+//    }
+private void addPostToLayout(String postId, String title, String llmKind, String content, String authorNotes) {
+    // Create a LinearLayout for each post
+    LinearLayout postLayout = new LinearLayout(this);
+    postLayout.setLayoutParams(new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT));
+    postLayout.setOrientation(LinearLayout.VERTICAL);
+    postLayout.setPadding(0, 16, 0, 16);
+    postLayout.setClickable(true);  // Make it clickable
 
-        TextView modelTextView = new TextView(this);
-        modelTextView.setText("Model: " + llmKind);
-        modelTextView.setTextSize(16);
-        modelTextView.setPadding(0, 4, 0, 16);
+    // Create a TextView for the post title
+    TextView titleTextView = new TextView(this);
+    titleTextView.setLayoutParams(new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT));
+    titleTextView.setText("Title: " + title);
+    titleTextView.setTextSize(18);
+    titleTextView.setPadding(0, 0, 0, 4);
 
-        linearLayoutUserPosts.addView(titleTextView);
-        linearLayoutUserPosts.addView(modelTextView);
-    }
+    // Create a TextView for the LLM model kind
+    TextView llmKindTextView = new TextView(this);
+    llmKindTextView.setLayoutParams(new LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT));
+    llmKindTextView.setText("Model: " + llmKind);
+    llmKindTextView.setTextSize(16);
+    llmKindTextView.setPadding(0, 4, 0, 16);
+
+    // Add TextViews to the post layout
+    postLayout.addView(titleTextView);
+    postLayout.addView(llmKindTextView);
+
+    // Set onClickListener to open PostDetail with the full post details
+    postLayout.setOnClickListener(v -> {
+        Intent intent = new Intent(ProfilePosts.this, PostDetail.class);
+        intent.putExtra("title", title);
+        intent.putExtra("llmKind", llmKind);
+        intent.putExtra("content", content);
+        intent.putExtra("authorNotes", authorNotes);
+        intent.putExtra("postId", postId);
+        startActivity(intent);
+    });
+
+    // Add the post layout to the main LinearLayout
+    linearLayoutUserPosts.addView(postLayout);
+}
 }
