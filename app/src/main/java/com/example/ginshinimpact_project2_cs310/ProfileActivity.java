@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private EditText editTextUsername, editTextEmail;
+    private EditText editTextUsername, editTextEmail, editTextID;
     private Button buttonSave, buttonLogout;
 
     private DatabaseReference mDatabase;
@@ -32,6 +32,7 @@ public class ProfileActivity extends AppCompatActivity {
         editTextUsername = findViewById(R.id.editTextUsername);
         buttonSave = findViewById(R.id.buttonSave);
         buttonLogout = findViewById(R.id.buttonLogout);
+        editTextID = findViewById(R.id.editTextID);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
@@ -54,6 +55,7 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadUserProfile() {
         editTextUsername.setText(userProfile.username);
         editTextEmail.setText(userProfile.email);
+        editTextID.setText(userProfile.ID); // Display User ID
     }
 
     private void updateUserProfile() {
