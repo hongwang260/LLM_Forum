@@ -9,8 +9,11 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.ValueEventListener;
 
 public class NewPostActivity extends AppCompatActivity {
 
@@ -58,29 +61,38 @@ public class NewPostActivity extends AppCompatActivity {
         // Save the post to database
         if (postId != null) {
             // Save to global posts node
-            databasePosts.child(postId).setValue(post)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Also save to the user's posts node if the global save is successful
-                            DatabaseReference userPostsRef = FirebaseDatabase.getInstance()
-                                    .getReference("users")
-                                    .child(userProfile.ID)
-                                    .child("posts")
-                                    .child(postId);
+            databasePosts.child(postId).setValue(post);
+            DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
-                            userPostsRef.setValue(post)
-                                    .addOnCompleteListener(userTask -> {
-                                        if (userTask.isSuccessful()) {
-                                            Toast.makeText(NewPostActivity.this, "Post saved", Toast.LENGTH_SHORT).show();
-                                            finish();
-                                        } else {
-                                            Toast.makeText(NewPostActivity.this, "Failed to save post under user", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        } else {
-                            Toast.makeText(NewPostActivity.this, "Failed to save post globally", Toast.LENGTH_SHORT).show();
+            // save the post to the correct user's posts
+            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    // Loop through each user node to find the correct user by ID
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        UserProfile user = userSnapshot.getValue(UserProfile.class);
+                        if (user != null && user.ID.equals(userProfile.ID)) {
+                            String userKey = userSnapshot.getKey();
+
+                            // Reference to the user's posts section
+                            DatabaseReference userPostsRef = usersRef.child(userKey).child("posts").child(postId);
+                            userPostsRef.setValue(post).addOnCompleteListener(userTask -> {
+                                if (userTask.isSuccessful()) {
+                                    Toast.makeText(NewPostActivity.this, "Post saved", Toast.LENGTH_SHORT).show();
+                                    finish();
+                                } else {
+                                    Toast.makeText(NewPostActivity.this, "Failed to save post under user", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                         }
-                    });
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(NewPostActivity.this, "Failed to access users in database", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
