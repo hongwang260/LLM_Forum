@@ -79,7 +79,7 @@ public class ProfilePosts extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         postLayout.setOrientation(LinearLayout.VERTICAL);
-        postLayout.setPadding(0, 16, 0, 16);
+        postLayout.setPadding(0, 8, 0, 8);
         postLayout.setClickable(true);  // Make it clickable
 
         TextView titleTextView = new TextView(this);
@@ -87,7 +87,7 @@ public class ProfilePosts extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         titleTextView.setText("Title: " + title);
-        titleTextView.setTextSize(18);
+        titleTextView.setTextSize(20);
         titleTextView.setPadding(0, 0, 0, 4);
 
         TextView llmKindTextView = new TextView(this);
@@ -95,8 +95,8 @@ public class ProfilePosts extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         llmKindTextView.setText("Model: " + llmKind);
-        llmKindTextView.setTextSize(16);
-        llmKindTextView.setPadding(0, 4, 0, 16);
+        llmKindTextView.setTextSize(20);
+        llmKindTextView.setPadding(0, 4, 0, 8);
 
         postLayout.addView(titleTextView);
         postLayout.addView(llmKindTextView);

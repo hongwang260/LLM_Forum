@@ -84,17 +84,17 @@ public class ProfileComments extends AppCompatActivity {
         // code to add the comments to the page dynamically
         TextView usernameTextView = new TextView(this);
         usernameTextView.setText("Username: " + username);
-        usernameTextView.setTextSize(16);
+        usernameTextView.setTextSize(20);
         usernameTextView.setPadding(0, 16, 0, 4);
 
         TextView ratingTextView = new TextView(this);
         ratingTextView.setText("Rating: " + rating);
-        ratingTextView.setTextSize(14);
+        ratingTextView.setTextSize(20);
         ratingTextView.setPadding(0, 4, 0, 4);
 
         TextView contentTextView = new TextView(this);
-        contentTextView.setText(content);
-        contentTextView.setTextSize(14);
+        contentTextView.setText("Content: " + content);
+        contentTextView.setTextSize(20);
         contentTextView.setPadding(0, 4, 0, 16);
 
         LinearLayout commentLayout = new LinearLayout(this);

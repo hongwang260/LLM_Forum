@@ -7,10 +7,11 @@
 
     <!-- Title for the user's posts section -->
     <TextView
+        android:id="@+id/PostsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mine Posts"
-        android:textSize="24sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp" />
 

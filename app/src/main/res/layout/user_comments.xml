@@ -4,19 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Title for the Comments Section -->
     <TextView
         android:id="@+id/commentsTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mine Comments"
-        android:textSize="24sp"
+        android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:padding="16dp" />
 
-    <!-- Scrollable Section for Comments -->
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -25,7 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- LinearLayout to dynamically add each comment -->
         <LinearLayout
             android:id="@+id/linearLayoutUserComments"
             android:layout_width="match_parent"

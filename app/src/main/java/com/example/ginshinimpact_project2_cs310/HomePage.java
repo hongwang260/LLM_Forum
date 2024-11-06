@@ -91,7 +91,7 @@ public class HomePage extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         postLayout.setOrientation(LinearLayout.VERTICAL);
-        postLayout.setPadding(0, 16, 0, 16);
+        postLayout.setPadding(0, 4, 0, 8);
         postLayout.setClickable(true);  // Make it clickable
 
         // Create a TextView for the post title
@@ -110,7 +110,7 @@ public class HomePage extends AppCompatActivity {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         llmKindTextView.setText("Model: " + llmKind);
         llmKindTextView.setTextSize(16);
-        llmKindTextView.setPadding(0, 4, 0, 16);
+        llmKindTextView.setPadding(0, 4, 0, 8);
 
         // Add TextViews to the post layout
         postLayout.addView(titleTextView);

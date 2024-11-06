@@ -5,12 +5,11 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Back button at the top -->
     <Button
         android:id="@+id/buttonBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Back"
+        android:text="&lt;"
         android:layout_gravity="start" />
 
     <TextView
@@ -46,7 +45,6 @@
         android:textSize="16sp"
         android:layout_marginTop="8dp" />
 
-    <!-- Scrollable comments section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,7 +70,7 @@
 
     <Button
         android:id="@+id/buttonAddComment"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Add Comment"
         android:layout_marginTop="16dp" />

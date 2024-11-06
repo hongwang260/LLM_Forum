@@ -6,6 +6,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <TextView
+        android:id="@+id/AddPostTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share Your Prompt"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:padding="16dp" />
+
     <EditText
         android:id="@+id/editTextTitle"
         android:layout_width="match_parent"
@@ -28,24 +37,13 @@
         android:id="@+id/editTextAuthorNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Author Notes" />
+        android:hint="Authors Notes" />
 
     <Button
         android:id="@+id/buttonSavePost"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Post" />
+        android:text="Share Post" />
 
-    <Button
-        android:id="@+id/buttonUpdatePost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Update Post" />
-
-    <Button
-        android:id="@+id/buttonDeletePost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Delete Post" />
 
 </LinearLayout>
