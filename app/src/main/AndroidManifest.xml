@@ -31,6 +31,7 @@
         <activity android:name=".NewPostActivity" />
         <activity android:name=".ProfileComments" />
         <activity android:name=".ProfilePosts" />
+        <activity android:name=".CommentModifier" />
 
     </application>
 </manifest>

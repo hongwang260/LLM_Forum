@@ -71,10 +71,11 @@ public class HomePage extends AppCompatActivity {
                     String llmKind = postSnapshot.child("llmKind").getValue(String.class);
                     String content = postSnapshot.child("content").getValue(String.class);
                     String authorNotes = postSnapshot.child("authorNotes").getValue(String.class);
+                    String ownerId = postSnapshot.child("ownerId").getValue(String.class);
                     String postId = postSnapshot.getKey();
 
-                    if (title != null && llmKind != null && content != null && authorNotes != null) {
-                        addPostToLayout(postId, title, llmKind, content, authorNotes);
+                    if (title != null && llmKind != null && content != null && authorNotes != null && ownerId != null) {
+                        addPostToLayout(postId, title, llmKind, content, authorNotes, ownerId);
                     }
                 }
             }
@@ -86,7 +87,7 @@ public class HomePage extends AppCompatActivity {
         });
     }
 
-    private void addPostToLayout(String postId, String title, String llmKind, String content, String authorNotes) {
+    private void addPostToLayout(String postId, String title, String llmKind, String content, String authorNotes, String ownerId) {
         // Create a LinearLayout for each post
         LinearLayout postLayout = new LinearLayout(this);
         postLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -126,6 +127,7 @@ public class HomePage extends AppCompatActivity {
             intent.putExtra("content", content);
             intent.putExtra("authorNotes", authorNotes);
             intent.putExtra("postId", postId);
+            intent.putExtra("ownerId", ownerId);
             startActivity(intent);
         });
 

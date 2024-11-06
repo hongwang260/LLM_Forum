@@ -69,4 +69,12 @@
             android:orientation="vertical"
             android:padding="8dp" />
     </ScrollView>
+
+    <Button
+        android:id="@+id/buttonAddComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Comment"
+        android:layout_marginTop="16dp" />
+
 </LinearLayout>
