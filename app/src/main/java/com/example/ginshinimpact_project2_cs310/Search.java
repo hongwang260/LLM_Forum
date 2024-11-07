@@ -94,15 +94,15 @@ public class Search extends AppCompatActivity {
                         String authorNote = childSnapshot.child("authorNotes").getValue(String.class);
 
                         if (option.contains("LLM")) {
-                            if (llm.contains(key)) {
+                            if (llm.toLowerCase().contains(key.toLowerCase())) {
                                 AddResult(title, llm, postId, content, authorNote, postOwner);
                             }
                         } else if (option.contains("Titles")) {
-                            if (title.contains(key)) {
+                            if (title.toLowerCase().contains(key.toLowerCase())) {
                                 AddResult(title, llm, postId, content, authorNote, postOwner);
                             }
                         } else {
-                            if (content.contains(key) || title.contains(key) || authorNote.contains(key)) {
+                            if (content.toLowerCase().contains(key.toLowerCase()) || title.toLowerCase().contains(key.toLowerCase()) || authorNote.toLowerCase().contains(key.toLowerCase())) {
                                 AddResult(title, llm, postId, content, authorNote, postOwner);
                             }
                         }
