@@ -55,9 +55,10 @@ public class ProfilePosts extends AppCompatActivity {
                             String postId = postSnapshot.getKey();
                             String content = postSnapshot.child("content").getValue(String.class);  // Content of the post
                             String authorNotes = postSnapshot.child("authorNotes").getValue(String.class);  // Author notes
+                            String postOwner = postSnapshot.child("ownerId").getValue(String.class);
 
                             if (title != null && llmKind != null) {
-                                addPostToLayout(postId, title, llmKind, content, authorNotes);
+                                addPostToLayout(postId, title, llmKind, content, authorNotes, postOwner);
                             }
                         }
                     }
@@ -72,7 +73,7 @@ public class ProfilePosts extends AppCompatActivity {
     }
 
     // add each post to the page for display
-    private void addPostToLayout(String postId, String title, String llmKind, String content, String authorNotes) {
+    private void addPostToLayout(String postId, String title, String llmKind, String content, String authorNotes, String postOwner) {
         // Create a LinearLayout for each post
         LinearLayout postLayout = new LinearLayout(this);
         postLayout.setLayoutParams(new LinearLayout.LayoutParams(
@@ -109,6 +110,7 @@ public class ProfilePosts extends AppCompatActivity {
             intent.putExtra("content", content);
             intent.putExtra("authorNotes", authorNotes);
             intent.putExtra("postId", postId);
+            intent.putExtra("ownerId", postOwner);
             startActivity(intent);
         });
 

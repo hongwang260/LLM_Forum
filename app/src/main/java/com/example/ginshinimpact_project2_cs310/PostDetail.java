@@ -3,6 +3,7 @@ package com.example.ginshinimpact_project2_cs310;
 import android.os.Bundle;
 import android.util.Log;
 import android.content.Intent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -47,13 +48,20 @@ public class PostDetail extends AppCompatActivity {
         Button modifyPostButton = findViewById(R.id.buttonModifyPost);
         Button deletePostButton = findViewById(R.id.buttonDeletePost);
 
-        modifyPostButton.setOnClickListener(v -> {
-            Intent intent = new Intent(PostDetail.this, PostModifier.class);
-            intent.putExtra("postId", postId);
-            startActivity(intent);
-        });
+        // Hide modify and delete buttons if the user is not the post owner
+        String loggedInUserId = UserSession.getInstance().getUserProfile().ID;
+        if (!postOwnerId.equals(loggedInUserId)) {
+            modifyPostButton.setVisibility(View.GONE);
+            deletePostButton.setVisibility(View.GONE);
+        } else {
+            modifyPostButton.setOnClickListener(v -> {
+                Intent intent = new Intent(PostDetail.this, PostModifier.class);
+                intent.putExtra("postId", postId);
+                startActivity(intent);
+            });
 
-        deletePostButton.setOnClickListener(v -> deletePost());
+            deletePostButton.setOnClickListener(v -> deletePost());
+        }
 
         TextView titleTextView = findViewById(R.id.textViewTitle);
         TextView llmKindTextView = findViewById(R.id.textViewLLMKind);
@@ -70,6 +78,7 @@ public class PostDetail extends AppCompatActivity {
         // Load comments with real-time updates
         loadComments();
     }
+
 
     private void loadComments() {
         postRef.addValueEventListener(new ValueEventListener() {
@@ -118,8 +127,6 @@ public class PostDetail extends AppCompatActivity {
         linearLayoutComments.addView(ratingTextView);
     }
 
-
-
     private void deletePost() {
         // Remove the post from the "posts" root
         FirebaseDatabase.getInstance().getReference("posts").child(postId).removeValue()
@@ -139,9 +146,9 @@ public class PostDetail extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     String userKey = userSnapshot.getKey();
-                    DatabaseReference userCommentsRef = usersRef.child(userKey).child("comments");
+                    DatabaseReference userPostRef = usersRef.child(userKey).child("posts");
 
-                    userCommentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    userPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot commentSnapshot) {
                             for (DataSnapshot comment : commentSnapshot.getChildren()) {
