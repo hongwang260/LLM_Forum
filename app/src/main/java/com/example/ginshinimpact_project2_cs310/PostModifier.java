@@ -18,6 +18,7 @@ public class PostModifier extends AppCompatActivity {
     private EditText editTextTitle, editTextContent, editTextAuthorNotes, editTextLLMKind;    private Button buttonSavePost;
     private String postId;
     private DatabaseReference postRef;
+    private DatabaseReference usersRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +33,7 @@ public class PostModifier extends AppCompatActivity {
 
         postId = getIntent().getStringExtra("postId");
         postRef = FirebaseDatabase.getInstance().getReference("posts").child(postId);
+        usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         loadPostData();
 
@@ -69,6 +71,7 @@ public class PostModifier extends AppCompatActivity {
             return;
         }
 
+        // this updates the posts root node foe the modify
         postRef.child("title").setValue(title);
         postRef.child("content").setValue(content);
         postRef.child("authorNotes").setValue(authorNotes);
@@ -81,5 +84,32 @@ public class PostModifier extends AppCompatActivity {
                         Toast.makeText(PostModifier.this, "Failed to update post.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+        // save the update correctly in the users root node
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Loop through each user node to find the correct user by ID
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    UserProfile user = userSnapshot.getValue(UserProfile.class);
+                    UserProfile loggedInUser = UserSession.getInstance().getUserProfile();
+                    if (user != null && user.ID.equals(loggedInUser.ID)) {
+                        String userKey = userSnapshot.getKey();
+
+                        // Reference to the user's posts section
+                        DatabaseReference userPostsRef = usersRef.child(userKey).child("posts").child(postId);
+                        userPostsRef.child("title").setValue(title);
+                        userPostsRef.child("content").setValue(content);
+                        userPostsRef.child("authorNotes").setValue(authorNotes);
+                        userPostsRef.child("llmKind").setValue(llmKind);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(PostModifier.this, "Failed to access users in database", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
