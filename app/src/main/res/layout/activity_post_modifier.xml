@@ -1,40 +1,74 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Label and EditText for Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
     <EditText
         android:id="@+id/editTextTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title" />
+        android:hint="Enter title" />
 
-
+    <!-- Label and EditText for LLM Model -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LLM Model"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp" />
     <EditText
         android:id="@+id/editTextLLMKind"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="LLM Model" />
+        android:hint="Enter LLM model" />
 
+    <!-- Label and EditText for Content -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp" />
     <EditText
         android:id="@+id/editTextContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Content" />
+        android:hint="Enter content" />
 
+    <!-- Label and EditText for Author Notes -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Author Notes"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="4dp" />
     <EditText
         android:id="@+id/editTextAuthorNotes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Author Notes" />
+        android:hint="Enter author notes" />
 
+    <!-- Save Post Button -->
     <Button
         android:id="@+id/buttonSavePost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Post" />
-
+        android:text="Save Post"
+        android:layout_marginTop="16dp" />
 
 </LinearLayout>

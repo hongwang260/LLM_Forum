@@ -28,11 +28,6 @@ public class Search extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.search);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
         Intent intent = getIntent();
         String key = intent.getStringExtra("Content");
@@ -42,7 +37,7 @@ public class Search extends AppCompatActivity {
         SearchPost(key, filter);
     }
 
-    private void AddResult (String title, String llm, String postId, String content, String authorNote){
+    private void AddResult (String title, String llm, String postId, String content, String authorNote, String ownerId){
         LinearLayout result = new LinearLayout(this);
         result.setOrientation(LinearLayout.VERTICAL);
         result.setPadding(0, 16, 0, 16);
@@ -72,9 +67,10 @@ public class Search extends AppCompatActivity {
             Intent intent = new Intent(this, PostDetail.class);
             intent.putExtra("title", title);
             intent.putExtra("postId", postId);
-            intent.putExtra("llmkind", llm);
+            intent.putExtra("llmKind", llm);
             intent.putExtra("content", content);
-            intent.putExtra("authorNote", authorNote);
+            intent.putExtra("authorNotes", authorNote);
+            intent.putExtra("ownerId", ownerId);
             startActivity(intent);
         });
 
@@ -94,19 +90,20 @@ public class Search extends AppCompatActivity {
                         String title = childSnapshot.child("title").getValue(String.class);
                         String content = childSnapshot.child("content").getValue(String.class);
                         String postId = childSnapshot.getKey();
+                        String postOwner = childSnapshot.child("ownerId").getValue(String.class);
                         String authorNote = childSnapshot.child("authorNotes").getValue(String.class);
 
                         if (option.contains("LLM")) {
                             if (llm.contains(key)) {
-                                AddResult(title, llm, postId, content, authorNote);
+                                AddResult(title, llm, postId, content, authorNote, postOwner);
                             }
                         } else if (option.contains("Titles")) {
                             if (title.contains(key)) {
-                                AddResult(title, llm, postId, content, authorNote);
+                                AddResult(title, llm, postId, content, authorNote, postOwner);
                             }
                         } else {
                             if (content.contains(key) || title.contains(key) || authorNote.contains(key)) {
-                                AddResult(title, llm, postId, content, authorNote);
+                                AddResult(title, llm, postId, content, authorNote, postOwner);
                             }
                         }
                     }
