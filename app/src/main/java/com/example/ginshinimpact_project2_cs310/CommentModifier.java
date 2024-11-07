@@ -112,6 +112,10 @@ public class CommentModifier extends AppCompatActivity {
         int rating;
         try {
             rating = Integer.parseInt(ratingText);
+            if  (rating < 1 || rating > 10) {
+                Toast.makeText(this, "Please provide a valid rating between 1 to 10.", Toast.LENGTH_SHORT).show();
+                return;
+            }
         } catch (NumberFormatException e) {
             Toast.makeText(this, "Rating must be a number.", Toast.LENGTH_SHORT).show();
             return;

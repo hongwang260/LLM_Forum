@@ -78,29 +78,43 @@ public class SignupPage extends AppCompatActivity {
     // save successful signed up user to the database
     private void saveUserToFirebase(String emailOrId, String password) {
         String key = emailOrId.contains("@") ? encodeEmail(emailOrId) : emailOrId;
-        //use a unique id for each user that exist in the database
-        DatabaseReference newUserRef = databaseRef.push();
-        String uniqueId = newUserRef.getKey();
 
-        // Create user profile to pass the stored values into Firebase
-        UserProfile user = new UserProfile();
-        user.email = emailOrId;
-        user.username = "";
-        user.ID = uniqueId;
-        user.setPassword(password);
-        UserSession.getInstance().setUserProfile(user);
+        // Check if the email or ID already exists
+        databaseRef.child(key).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                if (task.getResult().exists()) {
+                    // Email or ID is already in use
+                    Toast.makeText(SignupPage.this, "Email or ID is already in use. Please use a different one.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Proceed to save the new user since it does not exist yet
+                    DatabaseReference newUserRef = databaseRef.push();
+                    String uniqueId = newUserRef.getKey();
 
-        // Save to Firebase under the 'users' node
-        databaseRef.child(key).setValue(user)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(SignupPage.this, "Signup successful!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(SignupPage.this, ProfileActivity.class);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(SignupPage.this, "Signup failed. Please try again.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    // Create user profile to pass the stored values into Firebase
+                    UserProfile user = new UserProfile();
+                    user.email = emailOrId;
+                    user.username = "";
+                    user.ID = uniqueId;
+                    user.setPassword(password);
+                    UserSession.getInstance().setUserProfile(user);
+
+                    // Save to Firebase under the 'users' node
+                    databaseRef.child(key).setValue(user)
+                            .addOnCompleteListener(saveTask -> {
+                                if (saveTask.isSuccessful()) {
+                                    Toast.makeText(SignupPage.this, "Signup successful!", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(SignupPage.this, ProfileActivity.class);
+                                    startActivity(intent);
+                                    finish();  // Close the Signup page
+                                } else {
+                                    Toast.makeText(SignupPage.this, "Signup failed. Please try again.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            } else {
+                Toast.makeText(SignupPage.this, "Error checking for existing email/ID. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // encode email to URL encoding
