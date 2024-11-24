@@ -7,7 +7,7 @@
     tools:context=".HomePage">
 
     <TextView
-        android:id="@+id/commentsTitle"
+        android:id="@+id/HomeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Explore Prompts"
@@ -27,7 +27,7 @@
         android:layout_marginEnd="8dp"
         android:hint="Search"
         android:background="@color/cardview_shadow_start_color"
-        app:layout_constraintTop_toBottomOf="@id/commentsTitle"
+        app:layout_constraintTop_toBottomOf="@id/HomeTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/button" />
 
@@ -41,7 +41,7 @@
         android:textSize="10dp"
         android:padding="2dp"
         android:background="@android:color/white"
-        app:layout_constraintTop_toBottomOf="@id/commentsTitle"
+        app:layout_constraintTop_toBottomOf="@id/HomeTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/search_bar" />
 
