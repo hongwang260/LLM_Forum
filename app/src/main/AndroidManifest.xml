@@ -23,10 +23,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".HomePage"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+
         <!-- Profile Activity Declaration -->
         <activity android:name=".ProfileActivity" />
         <activity android:name=".SignupPage" />
-        <activity android:name=".HomePage" />
+<!--        <activity android:name=".HomePage" />-->
         <activity android:name=".PostDetail" />
         <activity android:name=".NewPostActivity" />
         <activity android:name=".ProfileComments" />

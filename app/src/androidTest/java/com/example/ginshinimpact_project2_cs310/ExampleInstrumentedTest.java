@@ -1,6 +1,7 @@
 package com.example.ginshinimpact_project2_cs310;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.view.View;
 
 import androidx.test.espresso.Espresso;
@@ -13,6 +14,7 @@ import androidx.test.core.app.ActivityScenario;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.*;
 
 
@@ -20,7 +22,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-
+import static org.hamcrest.Matchers.allOf;
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -77,5 +79,25 @@ public class ExampleInstrumentedTest {
         Espresso.onView(ViewMatchers.withId(R.id.button)).perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.topic)).check(matches(ViewMatchers.isDisplayed()))
                 .check(matches(ViewMatchers.withText("Search Result")));
+    }
+
+    // Test if clicking on the post will redirect
+    @Test
+    public void DetailReturnButton(){
+        ActivityScenario.launch(HomePage.class);
+//        Espresso.onView(ViewMatchers.withId(R.id.linearLayoutPosts)).perform(ViewActions.click());
+        SystemClock.sleep(2000);
+        Espresso.onView(
+                        allOf(
+                                ViewMatchers.withText("AngelaQA2"),
+                                ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.linearLayoutPosts))
+                        ))
+                .check(matches(ViewMatchers.isDisplayed()))
+                .perform(ViewActions.click());
+
+        Espresso.onView(ViewMatchers.withId(R.id.buttonBack)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.commentsTitle))
+                .check(matches(ViewMatchers.isDisplayed()))
+                .check(matches(ViewMatchers.withText("Explore Prompts")));
     }
 }
