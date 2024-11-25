@@ -66,13 +66,8 @@ public class SignupPage extends AppCompatActivity {
         // Pattern for a 10-digit ID
         Pattern idPattern = Pattern.compile("^\\d{10}$");
 
-        if (Patterns.EMAIL_ADDRESS.matcher(input).matches()) {
-            // Check if it's a USC email
-            return input.endsWith("@usc.edu");
-        } else {
-            // Check if it's a 10-digit ID
-            return idPattern.matcher(input).matches();
-        }
+        // return true for a valid email or 10 digit long ID
+        return (input.endsWith("@usc.edu") && input.length() > 8) || idPattern.matcher(input).matches();
     }
 
     // save successful signed up user to the database
