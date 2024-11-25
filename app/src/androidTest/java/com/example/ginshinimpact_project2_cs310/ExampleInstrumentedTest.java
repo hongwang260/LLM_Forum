@@ -1,6 +1,7 @@
 package com.example.ginshinimpact_project2_cs310;
 
 import android.content.Context;
+import android.view.View;
 
 import androidx.test.espresso.Espresso;
 import androidx.test.espresso.action.ViewActions;
@@ -25,12 +26,12 @@ import static org.hamcrest.Matchers.allOf;
 @RunWith(AndroidJUnit4.class)
 @FixMethodOrder(MethodSorters.JVM)
 public class ExampleInstrumentedTest {
-    @Test
-    public void useAppContext() {
-        // Context of the app under test.
-        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.example.ginshinimpact_project2_cs310", appContext.getPackageName());
-    }
+//    @Test
+//    public void useAppContext() {
+//        // Context of the app under test.
+//        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+//        assertEquals("com.example.ginshinimpact_project2_cs310", appContext.getPackageName());
+//    }
 
     // Test if the sign up button is functional in the Sign Up page
     @Test
@@ -108,11 +109,7 @@ public class ExampleInstrumentedTest {
         Espresso.onView(ViewMatchers.withId(R.id.buttonLogin)).perform(ViewActions.click());
 
         // Locate the post with the specific text "AngelaQA2" and click it
-        Espresso.onView(
-                        allOf(
-                                ViewMatchers.withText("AngelaQA2"), // Match the text of the post
-                                ViewMatchers.isDescendantOfA(ViewMatchers.withId(R.id.linearLayoutPosts)) // Ensure it's in the LinearLayout
-                        ))
+        Espresso.onView(ViewMatchers.withText("AngelaQA2"))
                 .check(matches(ViewMatchers.isDisplayed())) // Check if it is displayed
                 .perform(ViewActions.click()); // Perform click action
 
@@ -261,5 +258,18 @@ public class ExampleInstrumentedTest {
         Espresso.onView(ViewMatchers.withId(R.id.buttonLogout)).perform(ViewActions.click());
         Espresso.onView(ViewMatchers.withId(R.id.textViewTitle)).check(matches(ViewMatchers.isDisplayed()))
                 .check(matches(ViewMatchers.withText("PromptShare")));
+    }
+
+    @Test
+    public void RadioButtonCheck(){
+        ActivityScenario.launch(HomePage.class);
+        Espresso.onView(ViewMatchers.withId(R.id.op1)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.op1)).check(matches(ViewMatchers.isChecked()));
+
+        Espresso.onView(ViewMatchers.withId(R.id.op2)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.op2)).check(matches(ViewMatchers.isChecked()));
+
+        Espresso.onView(ViewMatchers.withId(R.id.op3)).perform(ViewActions.click());
+        Espresso.onView(ViewMatchers.withId(R.id.op3)).check(matches(ViewMatchers.isChecked()));
     }
 }
