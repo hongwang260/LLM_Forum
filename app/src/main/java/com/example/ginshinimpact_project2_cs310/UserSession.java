@@ -5,7 +5,7 @@ public class UserSession {
     private static UserSession instance;
     private UserProfile userProfile;
 
-    private UserSession() {
+    public UserSession() {
     }
 
     public static synchronized UserSession getInstance() {
