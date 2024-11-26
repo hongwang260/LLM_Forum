@@ -51,4 +51,16 @@ public class AuthenticationWhiteBoxTests {
     public void testIsValidEmailOrId_EmptyString() {
         assertFalse(isValidEmailOrId(""));
     }
+
+    // Encode the email to store in the database
+    public String customEncodeEmail(String email) {
+        return email.replace("@", "%40").replace(".", "%2E");
+    }
+
+    @Test
+    public void testEncodeFunctional(){
+        assertEquals("mwang%40usc%2Eedu", customEncodeEmail("mwang@usc.edu"));
+        assertEquals("hongwang%40usc%2Eedu", customEncodeEmail("hongwang@usc.edu"));
+        assertEquals("mwang424", customEncodeEmail("mwang424"));
+    }
 }
