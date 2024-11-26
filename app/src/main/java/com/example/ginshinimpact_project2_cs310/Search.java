@@ -37,7 +37,7 @@ public class Search extends AppCompatActivity {
         SearchPost(key, filter);
     }
 
-    private void AddResult (String title, String llm, String postId, String content, String authorNote, String ownerId){
+    public void AddResult (String title, String llm, String postId, String content, String authorNote, String ownerId){
         LinearLayout result = new LinearLayout(this);
         result.setOrientation(LinearLayout.VERTICAL);
         result.setPadding(0, 16, 0, 16);

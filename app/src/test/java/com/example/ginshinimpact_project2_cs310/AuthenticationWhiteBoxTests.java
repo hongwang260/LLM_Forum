@@ -58,9 +58,13 @@ public class AuthenticationWhiteBoxTests {
     }
 
     @Test
-    public void testEncodeFunctional(){
+    public void testEncodeValidEmail(){
         assertEquals("mwang%40usc%2Eedu", customEncodeEmail("mwang@usc.edu"));
         assertEquals("hongwang%40usc%2Eedu", customEncodeEmail("hongwang@usc.edu"));
+    }
+
+    @Test
+    public void testEncodeInvalidEmail(){
         assertEquals("mwang424", customEncodeEmail("mwang424"));
     }
 }

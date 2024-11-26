@@ -41,14 +41,15 @@ public class NewPostActivity extends AppCompatActivity {
         // Get the current user that is logged in
         UserProfile userProfile = UserSession.getInstance().getUserProfile();
 
-        // input data
+        // Input data
         String title = editTextTitle.getText().toString().trim();
         String llmKind = editTextLLMKind.getText().toString().trim();
         String content = editTextContent.getText().toString().trim();
         String authorNotes = editTextAuthorNotes.getText().toString().trim();
 
+
         // check required fields
-        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(llmKind) || TextUtils.isEmpty(content)) {
+        if (!validInput(title, llmKind, content, authorNotes)) {
             Toast.makeText(this, "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -94,6 +95,13 @@ public class NewPostActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private boolean validInput(String title, String llmKind, String content, String note){
+        if (title == "" || llmKind == "" || content == "") {
+            return false;
+        }
+        return true;
     }
 
 }
