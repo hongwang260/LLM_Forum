@@ -93,7 +93,7 @@ public class PostModifier extends AppCompatActivity {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     UserProfile user = userSnapshot.getValue(UserProfile.class);
                     UserProfile loggedInUser = UserSession.getInstance().getUserProfile();
-                    if (user != null && user.ID.equals(loggedInUser.ID)) {
+                    if (user != null && user.getID().equals(loggedInUser.getID())) {
                         String userKey = userSnapshot.getKey();
 
                         // Reference to the user's posts section

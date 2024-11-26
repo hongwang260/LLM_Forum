@@ -56,7 +56,7 @@ public class NewPostActivity extends AppCompatActivity {
         // Generate unique ID for the post
         String postId = databasePosts.push().getKey();
 
-        Post post = new Post(postId, title, llmKind, content, authorNotes, userProfile.ID);
+        Post post = new Post(postId, title, llmKind, content, authorNotes, userProfile.getID());
 
         // Save the post to database
         if (postId != null) {
@@ -71,7 +71,7 @@ public class NewPostActivity extends AppCompatActivity {
                     // Loop through each user node to find the correct user by ID
                     for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                         UserProfile user = userSnapshot.getValue(UserProfile.class);
-                        if (user != null && user.ID.equals(userProfile.ID)) {
+                        if (user != null && user.getID().equals(userProfile.getID())) {
                             String userKey = userSnapshot.getKey();
 
                             // Reference to the user's posts section

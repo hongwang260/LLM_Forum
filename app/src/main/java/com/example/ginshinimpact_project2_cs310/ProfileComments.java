@@ -26,7 +26,7 @@ public class ProfileComments extends AppCompatActivity {
         setContentView(R.layout.user_comments);
 
         linearLayoutUserComments = findViewById(R.id.linearLayoutUserComments);
-        currentUserID = UserSession.getInstance().getUserProfile().ID;
+        currentUserID = UserSession.getInstance().getUserProfile().getID();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Load the current user's comments

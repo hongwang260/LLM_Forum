@@ -60,9 +60,9 @@ public class CommentModifier extends AppCompatActivity {
                 // loop to find the corresponding user's info in the database
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     UserProfile user = userSnapshot.getValue(UserProfile.class);
-                    if (user != null && user.ID.equals(UserSession.getInstance().getUserProfile().ID)) {
-                        userId = user.ID;
-                        username = user.username;
+                    if (user != null && user.getID().equals(UserSession.getInstance().getUserProfile().getID())) {
+                        userId = user.getID();
+                        username = user.getUsername();
                         break;
                     }
                 }
@@ -160,9 +160,9 @@ public class CommentModifier extends AppCompatActivity {
                     if (user != null) {
                         String userKey = userSnapshot.getKey();
                         // Update or save comment in the current user's comments section
-                        if (user.ID.equals(loggedInUser.ID)) {
+                        if (user.getID().equals(loggedInUser.getID())) {
                             DatabaseReference userCommentsRef = usersRef.child(userKey).child("comments").child(comment.commentId);
-                            Comment userComment = new Comment(comment.commentId, loggedInUser.ID, comment.content, comment.rating, comment.username, comment.postId);
+                            Comment userComment = new Comment(comment.commentId, loggedInUser.getID(), comment.content, comment.rating, comment.username, comment.postId);
                             userCommentsRef.setValue(userComment);
                         }
                     }
@@ -190,7 +190,7 @@ public class CommentModifier extends AppCompatActivity {
                     if (user != null) {
                         String userKey = userSnapshot.getKey();
                         // remove the comment from the user comments section
-                        if (user.ID.equals(loggedInUser.ID)) {
+                        if (user.getID().equals(loggedInUser.getID())) {
                             usersRef.child(userKey).child("comments").child(commentId).removeValue();
                         }
                     }

@@ -27,7 +27,7 @@ public class ProfilePosts extends AppCompatActivity {
         setContentView(R.layout.user_posts);
 
         linearLayoutUserPosts = findViewById(R.id.linearLayoutUserPosts);
-        currentUserID = UserSession.getInstance().getUserProfile().ID;
+        currentUserID = UserSession.getInstance().getUserProfile().getID();
         usersRef = FirebaseDatabase.getInstance().getReference("users");
 
         // Load the current user's posts

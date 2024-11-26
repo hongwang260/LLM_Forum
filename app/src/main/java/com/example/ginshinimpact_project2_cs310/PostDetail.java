@@ -49,7 +49,7 @@ public class PostDetail extends AppCompatActivity {
         Button deletePostButton = findViewById(R.id.buttonDeletePost);
 
         // Hide modify and delete buttons if the user is not the post owner
-        String loggedInUserId = UserSession.getInstance().getUserProfile().ID;
+        String loggedInUserId = UserSession.getInstance().getUserProfile().getID();
         if (!postOwnerId.equals(loggedInUserId)) {
             modifyPostButton.setVisibility(View.GONE);
             deletePostButton.setVisibility(View.GONE);

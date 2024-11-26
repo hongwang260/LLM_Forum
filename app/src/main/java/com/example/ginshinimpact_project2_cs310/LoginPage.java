@@ -87,7 +87,7 @@ public class LoginPage extends AppCompatActivity {
                     if (storedPassword != null && storedPassword.equals(passwordInput)) {
                         UserProfile userProfile = new UserProfile(storedUsername, email, storedID);
                         userProfile.setPassword(storedPassword);
-                        Log.d("user ID in login", "user Id is : " + userProfile.ID);
+                        Log.d("user ID in login", "user Id is : " + userProfile.getID());
                         UserSession.getInstance().setUserProfile(userProfile);
 
                         // Password matches, proceed to ProfileActivity and pass the encoded email key

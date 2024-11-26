@@ -87,9 +87,9 @@ public class SignupPage extends AppCompatActivity {
 
                     // Create user profile to pass the stored values into Firebase
                     UserProfile user = new UserProfile();
-                    user.email = emailOrId;
-                    user.username = "";
-                    user.ID = uniqueId;
+                    user.setEmail(emailOrId);
+                    user.setUsername("");
+                    user.setID(uniqueId);
                     user.setPassword(password);
                     UserSession.getInstance().setUserProfile(user);
 

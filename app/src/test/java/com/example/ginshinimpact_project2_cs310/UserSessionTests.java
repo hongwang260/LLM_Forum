@@ -14,9 +14,9 @@ public class UserSessionTests {
         testingSession.setUserProfile(profile);
 
         UserProfile gotSession = testingSession.getUserProfile();
-        assertEquals("testUser", gotSession.username);
-        assertEquals("testUser@usc.edu", gotSession.email);
-        assertEquals("testUserID", gotSession.ID);
+        assertEquals("testUser", gotSession.getUsername());
+        assertEquals("testUser@usc.edu", gotSession.getEmail());
+        assertEquals("testUserID", gotSession.getID());
     }
 
     @Test

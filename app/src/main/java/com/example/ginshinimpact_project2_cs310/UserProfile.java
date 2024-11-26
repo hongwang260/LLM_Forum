@@ -3,9 +3,9 @@ package com.example.ginshinimpact_project2_cs310;
 import java.util.Map;
 
 public class UserProfile {
-    public String username;
-    public String email;
-    public String ID;
+    private String username;
+    private String email;
+    private String ID;
     private String password;
 
     public UserProfile() {
@@ -25,4 +25,13 @@ public class UserProfile {
         this.password = password;
     }
     public String getPassword() {return this.password;}
+
+    public void setUsername(String username) {this.username = username;}
+    public String getUsername () {return this.username;}
+
+    public void setEmail(String email) {this.email = email;}
+    public String getEmail() {return this.email;}
+
+    public void setID(String id) {this.ID = id;}
+    public String getID() {return this.ID;}
 }
