@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 public class ValidPostTest {
 
     public boolean validInput(String title, String llmKind, String content, String note){
-        if (title == "" || llmKind == "" || content == "") {
+        if (title.isEmpty() || llmKind.isEmpty() || content.isEmpty()) {
             return false;
         }
         return true;
