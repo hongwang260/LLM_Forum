@@ -112,12 +112,10 @@ public class PostDetail extends AppCompatActivity {
                         String finalAuthorUsername = authorUsername;
                         authorNameTextView.setOnClickListener(v -> {
                             Intent intent = new Intent(PostDetail.this, PublicProfileActivity.class);
-//                            intent.putExtra("authorId", postOwnerId);
                             intent.putExtra("authorUsername", finalAuthorUsername);
                             intent.putExtra("authorGender", authorGender);
                             intent.putExtra("authorJobTitle", authorJobTitle);
                             intent.putExtra("authorSelfIntro", authorSelfIntro);
-                            startActivity(intent);
                             startActivity(intent);
                         });
                     }
