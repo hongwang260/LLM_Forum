@@ -50,6 +50,43 @@
         android:layout_height="wrap_content"
         android:hint="Username" />
 
+    <!-- NEW FIELDS -->
+    <!-- Label and EditText for Job Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Job Title" />
+    <EditText
+        android:id="@+id/editTextJobTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Your Job Title" />
+
+    <!-- Label and EditText for Gender -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gender" />
+    <EditText
+        android:id="@+id/editTextGender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Your Gender" />
+
+    <!-- Label and EditText for Self Introduction -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Self Introduction" />
+    <EditText
+        android:id="@+id/editTextSelfIntro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tell us about yourself"
+        android:lines="4"
+        android:gravity="top"
+        android:inputType="textMultiLine" />
+
     <!-- Spacer to push buttons to the bottom -->
     <View
         android:layout_width="match_parent"

@@ -20,6 +20,17 @@
         android:textSize="30sp"
         android:textStyle="bold"
         android:layout_marginTop="8dp" />
+    <TextView
+        android:id="@+id/textViewAuthorName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Author: "
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:textColor="@android:color/holo_blue_dark"
+        android:clickable="true"
+        android:focusable="true" />
+
 
     <TextView
         android:id="@+id/textViewLLMKind"

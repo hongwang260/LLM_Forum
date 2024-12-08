@@ -8,7 +8,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,8 +20,9 @@ import com.google.firebase.database.ValueEventListener;
 public class PostDetail extends AppCompatActivity {
 
     private LinearLayout linearLayoutComments;
-    private DatabaseReference postRef;
+    private DatabaseReference postRef, userRef;
     private String postId, postOwnerId;
+    private TextView authorNameTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +70,8 @@ public class PostDetail extends AppCompatActivity {
         TextView llmKindTextView = findViewById(R.id.textViewLLMKind);
         TextView contentTextView = findViewById(R.id.textViewContent);
         TextView authorNotesTextView = findViewById(R.id.textViewAuthorNotes);
+        authorNameTextView = findViewById(R.id.textViewAuthorName);
+
         titleTextView.setText(title);
         llmKindTextView.setText(llmKind);
         contentTextView.setText(content);
@@ -75,10 +80,60 @@ public class PostDetail extends AppCompatActivity {
         linearLayoutComments = findViewById(R.id.linearLayoutComments);
         postRef = FirebaseDatabase.getInstance().getReference("posts").child(postId).child("comments");
 
-        // Load comments with real-time updates
+        // Load comments
         loadComments();
+
+        // Load author info
+        loadAuthorInfo();
     }
 
+    private void loadAuthorInfo() {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        usersRef.orderByChild("ID").equalTo(postOwnerId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // 通常只会匹配到一个用户节点
+                    for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                        String authorUsername = userSnapshot.child("username").getValue(String.class);
+                        String authorGender = userSnapshot.child("gender").getValue(String.class);
+                        String authorJobTitle = userSnapshot.child("jobTitle").getValue(String.class);
+                        String authorSelfIntro = userSnapshot.child("selfIntro").getValue(String.class);
+
+                        // 如果username为空，就给个默认值
+                        if (authorUsername == null || authorUsername.isEmpty()) {
+                            authorUsername = "Unknown Author";
+                        }
+
+                        // 显示作者信息
+                        authorNameTextView.setText("Author: " + authorUsername);
+
+                        // 为作者名文本设置点击事件，跳转到公共Profile页
+                        String finalAuthorUsername = authorUsername;
+                        authorNameTextView.setOnClickListener(v -> {
+                            Intent intent = new Intent(PostDetail.this, PublicProfileActivity.class);
+//                            intent.putExtra("authorId", postOwnerId);
+                            intent.putExtra("authorUsername", finalAuthorUsername);
+                            intent.putExtra("authorGender", authorGender);
+                            intent.putExtra("authorJobTitle", authorJobTitle);
+                            intent.putExtra("authorSelfIntro", authorSelfIntro);
+                            startActivity(intent);
+                            startActivity(intent);
+                        });
+                    }
+                } else {
+                    // 未找到该用户信息
+                    authorNameTextView.setText("Author: N/A");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // 加载出错的情况
+                authorNameTextView.setText("Author: N/A");
+            }
+        });
+    }
 
     private void loadComments() {
         postRef.addValueEventListener(new ValueEventListener() {
@@ -92,11 +147,10 @@ public class PostDetail extends AppCompatActivity {
 
                     Object ratingObj = commentSnapshot.child("rating").getValue();
                     String rating = null;
-
                     if (ratingObj instanceof Long) {
-                        rating = String.valueOf(ratingObj); // Convert Long to String
+                        rating = String.valueOf(ratingObj);
                     } else if (ratingObj instanceof String) {
-                        rating = (String) ratingObj; // Use String directly
+                        rating = (String) ratingObj;
                     }
 
                     if (username != null && content != null && rating != null) {
@@ -128,7 +182,6 @@ public class PostDetail extends AppCompatActivity {
     }
 
     private void deletePost() {
-        // Remove the post from the "posts" root
         FirebaseDatabase.getInstance().getReference("posts").child(postId).removeValue()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
@@ -144,6 +197,7 @@ public class PostDetail extends AppCompatActivity {
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     String userKey = userSnapshot.getKey();
                     DatabaseReference userPostRef = usersRef.child(userKey).child("posts");

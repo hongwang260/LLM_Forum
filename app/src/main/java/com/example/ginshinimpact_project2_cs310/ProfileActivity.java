@@ -14,10 +14,11 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
-
 public class ProfileActivity extends AppCompatActivity {
 
     private EditText editTextUsername, editTextEmail, editTextID;
+    // 新增的字段 EditText
+    private EditText editTextJobTitle, editTextGender, editTextSelfIntro;
     private Button buttonSave, buttonLogout;
 
     private DatabaseReference mDatabase;
@@ -30,9 +31,14 @@ public class ProfileActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.editTextEmail);
         editTextUsername = findViewById(R.id.editTextUsername);
+        editTextID = findViewById(R.id.editTextID);
+
+        editTextJobTitle = findViewById(R.id.editTextJobTitle);
+        editTextGender = findViewById(R.id.editTextGender);
+        editTextSelfIntro = findViewById(R.id.editTextSelfIntro);
+
         buttonSave = findViewById(R.id.buttonSave);
         buttonLogout = findViewById(R.id.buttonLogout);
-        editTextID = findViewById(R.id.editTextID);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
@@ -55,15 +61,33 @@ public class ProfileActivity extends AppCompatActivity {
     private void loadUserProfile() {
         editTextUsername.setText(userProfile.getUsername());
         editTextEmail.setText(userProfile.getEmail());
-        editTextID.setText(userProfile.getID()); // Display User ID
+        editTextID.setText(userProfile.getID());
+
+        // 新增字段的显示
+        editTextJobTitle.setText(userProfile.getJobTitle());
+        editTextGender.setText(userProfile.getGender());
+        editTextSelfIntro.setText(userProfile.getSelfIntro());
     }
 
     private void updateUserProfile() {
         String updatedUsername = editTextUsername.getText().toString().trim();
+        String updatedJobTitle = editTextJobTitle.getText().toString().trim();
+        String updatedGender = editTextGender.getText().toString().trim();
+        String updatedSelfIntro = editTextSelfIntro.getText().toString().trim();
 
         Map<String, Object> updates = new HashMap<>();
+        // 检查是否有修改
         if (!updatedUsername.equals(userProfile.getUsername())) {
             updates.put("username", updatedUsername);
+        }
+        if (!updatedJobTitle.equals(userProfile.getJobTitle())) {
+            updates.put("jobTitle", updatedJobTitle);
+        }
+        if (!updatedGender.equals(userProfile.getGender())) {
+            updates.put("gender", updatedGender);
+        }
+        if (!updatedSelfIntro.equals(userProfile.getSelfIntro())) {
+            updates.put("selfIntro", updatedSelfIntro);
         }
 
         if (!updates.isEmpty() && userProfile.getEmail() != null) {
@@ -72,7 +96,12 @@ public class ProfileActivity extends AppCompatActivity {
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
                             Toast.makeText(ProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+                            // 更新本地 userProfile
                             userProfile.setUsername(updatedUsername);
+                            userProfile.setJobTitle(updatedJobTitle);
+                            userProfile.setGender(updatedGender);
+                            userProfile.setSelfIntro(updatedSelfIntro);
+
                             UserSession.getInstance().setUserProfile(userProfile);
                             Intent intent = new Intent(ProfileActivity.this, HomePage.class);
                             startActivity(intent);
